@@ -3,8 +3,6 @@ total = 0
 dtotal = 0
 
 card_number = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q","K", "A"]
-deck = [x for _ in range(4) for x in [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q","K", "A"]]
-
 player = []
 dealer = []
 
@@ -50,11 +48,11 @@ print(total)
 if dtotal > 21:
     print("the dealer busts, you win!")
 else:
-
+    pass
 
 if total > 21:
     print("Bust! You lost")
 else:
-
+    pass
 
 
