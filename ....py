@@ -18,9 +18,9 @@ while running:
             running = False
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
+    screen.fill("Black")
 
-    pygame.draw.circle(screen, "red", player_pos, 40)
+    pygame.draw.circle(screen, "blue", player_pos, 20)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -36,8 +36,8 @@ while running:
     pygame.display.flip()
 
     # limits FPS to 60
-    # dt is delta time in seconds since last frame, used for framerate-
+    # dt is delta time in seconds since last frame, used for frame rate-
     # independent physics.
-    dt = clock.tick(60) / 1000
+    dt = clock.tick(120) / 1000
 
 pygame.quit()
