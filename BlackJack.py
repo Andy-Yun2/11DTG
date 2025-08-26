@@ -9,12 +9,32 @@ dealer = []
 player.append(r.choice(card_number))
 player.append(r.choice(card_number))
 print(player)
+while True:
+    try:
+        another_one = input("Get another card? ").lower()
+        if another_one == "y":
+            player.append(r.choice(card_number))
+            print(player)
+            for i in player:
+                if i == "K" or i == "Q" or i == "J":
+                    total += 10
 
-another_one = input("Get another card? ").lower()
-if another_one == "y":
-    player.append(r.choice(card_number))
-else:
-    pass
+                elif i == "A":
+                    total += 11
+                else:
+                    total += i
+            print(total)
+            if total > 21:
+                print("You lost")
+            else:
+                continue
+        elif another_one == "n":
+            break
+        else:
+            raise ValueError
+    except Exception:
+        print("Error")
+        continue
 
 for i in player:
     if i == "K" or i == "Q" or i == "J":
@@ -45,14 +65,13 @@ if dtotal < 18:
         else:
             dtotal += i
 print(total)
+if total > 21:
+    print("Bust! You lost")
+
 if dtotal > 21:
     print("the dealer busts, you win!")
 else:
-    pass
-
-if total > 21:
-    print("Bust! You lost")
-else:
-    pass
-
-
+    if total > dtotal:
+        print("You Won!")
+    else:
+        print("The dealer Won!")
