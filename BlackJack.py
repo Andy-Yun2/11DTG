@@ -14,6 +14,8 @@ while True:
     while True:
         try:
             bid = int(input("Place your bid: "))
+            if bid > balance:
+                raise ValueError
             break
         except ValueError:
             print("Invalid biding")
