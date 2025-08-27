@@ -1,7 +1,7 @@
 import random as r
-balance = 200
+balance = 1000
 
-while True:  # 🔁 retry loop
+while True:
     total = 0
     dealer_total = 0
     d_bust = "n"
@@ -133,6 +133,8 @@ while True:  # 🔁 retry loop
         if again != "y":
             print("Thanks for playing!")
             break
+        else:
+            continue
     else:
         print("Thanks for playing!")
         break
