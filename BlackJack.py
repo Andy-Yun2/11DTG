@@ -1,6 +1,6 @@
 import random as r
 balance = 1000
-
+print("--------------Welcome to Black Jack Version 1.8--------------")
 while True:
     total = 0
     dealer_total = 0
@@ -22,36 +22,56 @@ while True:
 
     player.append(r.choice(card_number))
     player.append(r.choice(card_number))
-    print(player)
-    for i in player:
-        if i == "K" or i == "Q" or i == "J":
+    print(f"Your hand: {player}")
+    aces1 = 0
+    for a in player:
+        if a == "K" or a == "Q" or a == "J":
             total += 10
-        elif i == "A":
-            if total + 11 > 21:
-                total += 1
-            else:
-                total += 11
+        elif a == "A":
+            total += 11
+            aces1 += 1
         else:
-            total += i
-    print(total)
+            total += a
+    while total > 21 and aces1 > 0:
+        total -= 10
+        aces1 -= 1
+    print(f"Your total is: {total}")
+    dealer.append(r.choice(card_number))
+    dealer.append(r.choice(card_number))
+    print(f"Dealer shows: {dealer[0]}")
+
+    aces = 0
+    for a in dealer:
+        if a == "K" or a == "Q" or a == "J":
+            dealer_total += 10
+        elif a == "A":
+            dealer_total += 11
+            aces += 1
+        else:
+            dealer_total += a
+    while dealer_total > 21 and aces > 0:
+        dealer_total -= 10
+        aces -= 1
     while True:
         try:
-            another_one = input("Get another card? ").lower()
+            another_one = input("Get another card? (y/n): ").lower()
             if another_one == "y":
                 player.append(r.choice(card_number))
-                print(player)
+                print(f"Your hand: {player}")
                 total = 0
-                for i in player:
-                    if i == "K" or i == "Q" or i == "J":
+                aces1 = 0
+                for a in player:
+                    if a == "K" or a == "Q" or a == "J":
                         total += 10
-                    elif i == "A":
-                        if total + 11 > 21:
-                            total += 1
-                        else:
-                            total += 11
+                    elif a == "A":
+                        total += 11
+                        aces1 += 1
                     else:
-                        total += i
-                print(total)
+                        total += a
+                while total > 21 and aces1 > 0:
+                    total -= 10
+                    aces1 -= 1
+                print(f"Your total is: {total}")
                 if total > 21:
                     lost = "y"
                     print("Bust! You lost")
@@ -67,76 +87,53 @@ while True:
             print("Error")
             continue
 
-    dealer.append(r.choice(card_number))
-    dealer.append(r.choice(card_number))
-    for a in dealer:
-        if a == "K" or a == "Q" or a == "J":
-            dealer_total += 10
-        elif a == "A":
-            dealer_total += 11
-        else:
-            dealer_total += a
-    for i in range(3):
-        if dealer_total < 18:
-            dealer.append(r.choice(card_number))
-            dealer_total = 0
-            for b in dealer:
-                if b == "K" or b == "Q" or b == "J":
-                    dealer_total += 10
-                elif b == "A":
-                    dealer_total += 11
-                else:
-                    dealer_total += b
-            if dealer_total < 19:
-                if r.randint(1,20) > 3:
-                    dealer.append(r.choice(card_number))
-                    dealer_total = 0
-                    for b in dealer:
-                        if b == "K" or b == "Q" or b == "J":
-                            dealer_total += 10
-                        elif b == "A":
-                            dealer_total += 11
-                        else:
-                            dealer_total += b
-            if dealer_total < 20:
-                if r.randint(1, 100) > 95:
-                    dealer.append(r.choice(card_number))
-                    dealer_total = 0
-                    for c in dealer:
-                        if c == "K" or c == "Q" or c == "J":
-                            dealer_total += 10
-                        elif c == "A":
-                            dealer_total += 11
-                        else:
-                            dealer_total += c
-    if lost == "n":
-        print(dealer)
-        print(f"the dealer total is {dealer_total}")
 
     if lost == "n":
+        while dealer_total < 17:
+            dealer.append(r.choice(card_number))
+            dealer_total = 0
+            aces = 0
+            for a in dealer:
+                if a == "K" or a == "Q" or a == "J":
+                    dealer_total += 10
+                elif a == "A":
+                    dealer_total += 11
+                    aces += 1
+                else:
+                    dealer_total += a
+            while dealer_total > 21 and aces > 0:
+                dealer_total -= 10
+                aces -= 1
+
+        print(f"dealer hand: {dealer}")
+        print(f"dealer total: {dealer_total}")
+
         if dealer_total > 21:
             d_bust = "y"
-            print("the dealer busts, you win!")
-            balance += 3 * bid
+            print("The dealer busts, you win!")
+            balance += bid
 
         if total > dealer_total:
             print("You Win!")
-            balance += 2 * bid
+            if len(player) == 2:
+                balance += 1.5 * bid
+            else:
+                balance += bid
         elif total == dealer_total:
             print("It is a draw")
-            balance -= bid
         elif d_bust == "n":
             print("The dealer Won!")
             balance -= bid
-    print(f"Your balance is {balance}")
+        print(f"Your balance is {balance}")
 
-    if balance != 0:
-        again = input("Do you want to play again? (y/n): ").lower()
-        if again != "y":
-            print("Thanks for playing!")
-            break
-        else:
-            continue
-    else:
+    again = input("Do you want to play again? (y/n): ").lower()
+    if again == "n":
         print("Thanks for playing!")
+        print("-------------------------------------------------------------")
         break
+    else:
+        if balance == 0:
+            print("You sold your Kidney")
+            print("Your balance has been reset to 20000")
+            balance = 1000
+
