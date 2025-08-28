@@ -1,3 +1,5 @@
+"""Python BlackJack v1.6 (Done)."""
+
 import random as r
 balance = 1000
 print("--------------Welcome to Black Jack Version 1.8--------------")
@@ -5,7 +7,7 @@ while True:
     total = 0
     dealer_total = 0
     d_bust = "n"
-    card_number = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q","K", "A"]
+    card_number = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
     player = []
     dealer = []
     lost = "n"
@@ -87,7 +89,6 @@ while True:
             print("Error")
             continue
 
-
     if lost == "n":
         while dealer_total < 17:
             dealer.append(r.choice(card_number))
@@ -136,4 +137,3 @@ while True:
             print("You sold your Kidney")
             print("Your balance has been reset to 20000")
             balance = 1000
-
