@@ -136,4 +136,4 @@ while True:
         if balance == 0:
             print("You sold your Kidney")
             print("Your balance has been reset to 20000")
-            balance = 1000
+            balance = 20000
