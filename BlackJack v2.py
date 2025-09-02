@@ -56,8 +56,13 @@ def main():
                     print(f"Your hand: {player_hand}")
                     print(f"Your hand's Value: {hand_value(player_hand)}")
                     continue
-                case n if n ==
-
+                case n if n == "double down":
+                    player_hand.append(draw_card(card_deck))
+                    print(f"Your hand: {player_hand}")
+                    print(f"Your hand's Value: {hand_value(player_hand)}")
+                    break
+                case _:
+                    raise TypeError
         except TypeError:
             print("Invalid Prompt")
 
