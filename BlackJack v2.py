@@ -1,5 +1,4 @@
 import random
-from logging import raiseExceptions
 
 suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
@@ -10,7 +9,7 @@ card_values = {
 }
 player_hand = []
 dealer_hand = []
-cards_options = ["stand", "hit", "surrender", "double down", "split"]
+cards_options = ["stand", "hit", "surrender", "double down"]
 
 card_deck = [(rank, suit, card_values[rank]) for suit in suits for rank in ranks]
 random.shuffle(card_deck)
@@ -33,20 +32,34 @@ def hand_value(hand):
         aces -= 1
     return total
 
-def
+def hand_split():
+    pass
 
 def main():
+    balance = 500
+    bet = 100
     player_hand.append(draw_card(card_deck))
     player_hand.append(draw_card(card_deck))
-    print(player_hand)
-    print(hand_value(player_hand))
+    print(f"Your hand: {player_hand}")
+    print(f"Your hand's Value: {hand_value(player_hand)}")
     more = "none"
     while more != "surrender":
         try:
             more = input(f"Make Your Choice: {cards_options} ").lower()
-            if more not in cards_options:
-                raise Exception
-        except Exception:
+            match more:
+                case n if n == "surrender":
+                    balance -= bet / 2
+                case n if n == "stand":
+                    break
+                case n if n == "hit":
+                    player_hand.append(draw_card(card_deck))
+                    print(f"Your hand: {player_hand}")
+                    print(f"Your hand's Value: {hand_value(player_hand)}")
+                    continue
+                case n if n ==
+
+        except TypeError:
+            print("Invalid Prompt")
 
 
 
