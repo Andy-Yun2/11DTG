@@ -15,7 +15,6 @@ def create_deck():
     return deck
 
 def draw_card(deck):
-    """Draw a card silently."""
     if not deck:
         print("Deck empty, reshuffling...")
         deck.extend(create_deck())
@@ -60,7 +59,7 @@ def play_split_hand(deck, hand):
         if hand_value(hand) > 21:
             print(f"{hand} busts!")
             return hand
-        choice = input(f"{hand} (Value: {hand_value(hand)}) - Hit or Stand? ").lower()
+        choice = input(f"{hand} (Value: {hand_value(hand)}) - Hit or Stand?").lower()
         if choice == "hit":
             card = draw_card(deck)
             hand.append(card)
@@ -95,10 +94,16 @@ def hand_split(deck, player_hand, dealer_hand, balance, bet):
 
 def play_round(balance, deck):
     bet = 0
-    try:
-        bet = int(input("Place your bet: "))
-    except ValueError:
-        print("Invalid, Try again")
+    while True:
+        try:
+            bet = int(input("Place your bet: "))
+            if bet > balance:
+                raise ValueError
+            if bet > 0:
+                break
+        except ValueError:
+            print("Invalid, Try again")
+            continue
     player_hand = [draw_card(deck), draw_card(deck)]
     dealer_hand = [draw_card(deck), draw_card(deck)]
 
@@ -156,7 +161,7 @@ def play_round(balance, deck):
 
 def main():
     print("----------Welcome to the Game of BlackJack----------")
-    balance = 500
+    balance = 20000
     deck = create_deck()
     while balance > 0:
         print(f"\nBalance: {balance}")
