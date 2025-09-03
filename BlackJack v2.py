@@ -1,4 +1,5 @@
 import random
+from idlelib.pyshell import restart_line
 
 suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
@@ -164,6 +165,13 @@ def main():
         cont = input("Play again? (y/n): ").lower()
         if cont != 'y':
             break
+
     print(f"Game over! Final balance: {balance}")
+    retry = input("retry? (y/n): ")
+    if retry != 'n':
+        print("----------------------------------------------------")
+    else:
+
+
 
 main()
