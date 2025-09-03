@@ -170,13 +170,7 @@ def main():
         cont = input("Play again? (y/n): ").lower()
         if cont != 'y':
             break
-
     print(f"Game over! Final balance: {balance}")
-    retry = input("retry? (y/n): ")
-    if retry != 'n':
-        print("----------------------------------------------------")
-    else:
-
 
 
 main()
