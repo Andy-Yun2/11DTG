@@ -113,7 +113,7 @@ def play_round(balance, deck):
 
     if player_hand[0].split()[0] == player_hand[1].split()[0]:
         split_choice = input("You have a pair! Split? (y/n): ").lower()
-        if split_choice == 'y':
+        if split_choice != 'n':
             return hand_split(deck, player_hand, dealer_hand, balance, bet)
 
     while True:
@@ -168,7 +168,7 @@ def main():
         print(f"\nBalance: {balance}")
         balance = play_round(balance, deck)
         cont = input("Play again? (y/n): ").lower()
-        if cont != 'y':
+        if cont == 'n':
             break
     print(f"Game over! Final balance: {balance}")
 
