@@ -1,5 +1,4 @@
 import random
-from idlelib.pyshell import restart_line
 
 suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
@@ -149,19 +148,18 @@ def play_round(balance, deck):
     player_total = hand_value(player_hand)
 
     if dealer_total > 21 or player_total > dealer_total:
-        print("You win!")
+        print("You win! 🎉")
         if len(player_hand) == 2:
             return balance + bet * 1.5
         return balance + bet
     elif player_total < dealer_total:
-        print("Dealer wins!")
+        print("Dealer wins! 💀")
         return balance - bet
     else:
-        print("Push! (Tie)")
+        print("Push! 🤝 (Tie)")
         return balance
 
 def main():
-    print("----------Welcome to the Game of BlackJack----------")
     balance = 20000
     deck = create_deck()
     while balance > 0:
@@ -173,4 +171,3 @@ def main():
     print(f"Game over! Final balance: {balance}")
 
 
-main()
