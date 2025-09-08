@@ -23,7 +23,7 @@ while True:
             continue
     elif game == "Tik Tak Toe":
         import TikTakToev1
-        print(--------------------"Welcome to Tik Tak Toe--------------------")
+        print("Welcome to Tik Tak Toe")
         return_ = 0
         while return_ != 100:
             if __name__ == '__main__':

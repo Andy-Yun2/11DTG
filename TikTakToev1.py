@@ -17,8 +17,11 @@ def check_win(player):
         if board[a] == board[b] == board[c] == player:
             return True
     return False
-def game():
+
+def game(score):
     player = "X"
+    for index in range(9):
+        board[index] = " "
     while True:
         print_board()
         try:
@@ -35,13 +38,22 @@ def game():
             if check_win(player):
                 print_board()
                 print(f"Player {player} wins!")
-                break
+                return score + 1
             if " " not in board:
                 print_board()
                 print("It is a draw")
-                break
+                return score
             player = "O" if player == "X" else "X"
         except ValueError:
             print("retry")
 
-game()
+def main_loop():
+    score = 0
+    count = 0
+    while score >= 0:
+        game(score)
+        retry = input("Retry? (y/n) ")
+        if retry != "y":
+            break
+
+main_loop()
