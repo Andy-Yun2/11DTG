@@ -22,7 +22,7 @@ def check_win(player):
     return False
 
 def selection():
-    difficulty = input("Choose your difficulty: (Easy, Medium, Hard): ").capitalize()
+    difficulty = input("Choose your difficulty: (Easy, Medium or Hard): ").capitalize()
     if difficulty == "Easy":
         return "Easy"
     elif difficulty == "Medium":
@@ -32,22 +32,71 @@ def selection():
     else:
         return "Invalid"
 
-def enemy_easy():
-    pass
-def enemy_medium():
-    pass
-def enemy_hard():
-    pass
+def enemy(level, ):
+    choices = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    print("Your opponent is choosing: ")
+    if level == "Easy":
+        while True:
+            choice = random.choice(choices)
+            index = choice - 1
+            if board[index] != " ":
+                choices.pop(choice)
+                continue
+            else:
+                return board[index] =
+
+
+    elif level == "Hard":
+        pass
+    elif level == "Medium":
+        pass
 
 
 def game_loop():
-    while True:
+    score = 0
+    ask = True
+    letter = True
+    player = ""
+    level = ""
+
+    while ask:
         level = selection()
         if level == "Invalid":
             continue
+        ask = False
+
+    while letter:
+        player = input("What character do you want to be? ")
+        if len(player) > 1:
+            print("Too many characters")
+            continue
+        letter = False
+
+    while True:
         print_board()
 
+        pos = int(input("What position? (1 - 9) "))
+        if pos > 9 or pos < 1:
+            print("That is an invalid spot!")
+            continue
+        index = pos - 1
+        if board[index] != " ":
+            print("That spot is taken")
+            continue
 
+        board[index] = player
+
+        enemy(level, player)
+
+        if check_win(player):
+            print_board()
+            print("You WIN!!!")
+            return score + 1
+
+        if " " not in board:
+            print_board()
+            print("It is a draw")
+            return score
 
 
 
