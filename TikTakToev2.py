@@ -1,5 +1,4 @@
 import random
-
 board = [" "] * 9
 win = [[0,1,2], [3,4,5], [6,7,8],
        [0,3,6], [1,4,7], [2,5,8],
@@ -18,6 +17,43 @@ def check_win(player):
         if board[a] == board[b] == board[c] == player:
             return True
     return False
+
+def check_terminal_state(player, e_char):
+    if check_win(player):
+        return player
+    if check_win(e_char):
+        return e_char
+    if " " not in board:
+        return "Draw"
+    return None
+
+def minimax(is_maximising, player, e_char):
+    state = check_terminal_state(player, e_char)
+    if state == player: return -1
+    if state == e_char: return 1
+    if state == "Draw": return 0
+
+    if is_maximising:
+        best_score = -float("inf")
+        for i in range(9):
+            if board[i] == " ":
+                board[i] = e_char
+                score = minimax(False, player, e_char)
+                board[i] = " "
+                best_score = max(best_score, score)
+        return best_score
+    else:
+        best_score = float("inf")
+        for i in range(9):
+            if board[i] == " ":
+                board[i] = player
+                score = minimax(True, player, e_char)
+                board[i] = " "
+                best_score = min(best_score, score)
+        return best_score
+
+
+
 
 def selection():
     while True:
@@ -73,8 +109,19 @@ def enemy(level, enemy_char, player):
             if board[i] == " ":
                 board[i] = enemy_char
                 return
+
     elif level == "Impossible":
-        pass
+        best_score = -float("inf")
+        move = None
+        for i in range(9):
+            if board[i] == " ":
+                board[i] = enemy_char
+                score = minimax(False, player, enemy_char)
+                board[i] = " "
+                if score > best_score:
+                    best_score = score
+                    move = i
+        board[move] = enemy_char
 
 
 def game_loop():
@@ -90,17 +137,24 @@ def game_loop():
 
     while True:
         print_board()
-        pos = int(input("What position? (1 - 9): "))
-        if pos < 1 or pos > 9:
-            print("That is an invalid spot!")
-            continue
+        pos = input("What position? (1 - 9): ")
 
-        index = pos - 1
-        if board[index] != " ":
-            print("That spot is taken!")
-            continue
+        try:
+            int(pos)
+            if pos < 1 or pos > 9:
+                print("That is an invalid spot!")
+                continue
 
-        board[index] = player
+            index = pos - 1
+
+            if board[index] != " ":
+                print("That spot is taken!")
+                continue
+
+            board[index] = player
+        except ValueError:
+            print("Error, Invalid input")
+            continue
 
         if check_win(player):
             print_board()
@@ -120,5 +174,10 @@ def game_loop():
             print("Enemy wins!")
             return score
 
-
-game_loop()
+def main():
+    while True:
+        score = game_loop()
+        print(f"Your Score: {score}")
+        repeat = input("Play again? y/n ")
+        if repeat != "y":
+            return "Thank You for Playing."
