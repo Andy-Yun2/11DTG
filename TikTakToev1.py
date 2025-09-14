@@ -49,7 +49,6 @@ def game(score):
 
 def main_loop():
     score = 0
-    count = 0
     while score >= 0:
         game(score)
         retry = input("Retry? (y/n) ")
