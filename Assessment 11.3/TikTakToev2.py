@@ -240,7 +240,7 @@ def play_mode(mod, player, level, enemy_char, score):
 
             elif turn == "other":
 
-                if check_win():
+                if check_win(enemy_char):
                     print_board()
                     print("Enemy wins!")
                     return score - 1

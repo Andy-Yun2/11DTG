@@ -80,10 +80,10 @@ def hand_split(deck, player_hand, dealer_hand, balance, bet):
     print(f"Hand 1: {hand1} (Value: {hand_value(hand1)})")
     print(f"Hand 2: {hand2} (Value: {hand_value(hand2)})")
 
-    print("\n--- Playing Hand 1 ---")
+    print("\n--- Hand 1 ---")
     hand1 = play_split_hand(deck, hand1)
 
-    print("\n--- Playing Hand 2 ---")
+    print("\n--- Hand 2 ---")
     hand2 = play_split_hand(deck, hand2)
 
     dealer_total = dealer_turn(deck, dealer_hand)
@@ -160,7 +160,7 @@ def play_round(balance, deck):
         return balance
 
 def main():
-    balance = 20000
+    balance = 1000
     deck = create_deck()
     while balance > 0:
         print(f"\nBalance: {balance}")
