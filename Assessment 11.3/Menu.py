@@ -1,11 +1,11 @@
-print("Welcome to waffle time 101")
-games = ["BlackJack", "Tik Tak Toe", "Something else"]
+print("Welcome to Game Compendium 101")
+games = ["BlackJack", "Tik Tak Toe", "Math Dungeon"]
 
 while True:
     print("\nCollection of games: "
           "\nBlackJack"
           "\nTik Tak Toe"
-          "\nSomething else")
+          "\nMath Dungeon")
     game = input("\nWhat game do you want to play? (Copy paste form the list above): ")
     if game not in games:
         print("Invalid, Try again")

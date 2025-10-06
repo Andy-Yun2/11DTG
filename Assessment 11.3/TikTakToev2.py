@@ -89,8 +89,6 @@ def character_selection():
         print("Please choose only one character.")
 
 
-
-
 def choose_enemy_char(player):
     """Randomly choose an enemy character different from player."""
     e_chars = ["!", "@", "#", "O", "X", "?", "+", "=", "-", "~", "^"]
@@ -209,14 +207,14 @@ def play_mode(mod, player, level, enemy_char, score):
                 print("It's a draw!")
                 return score
     else:
-        turn = "player" if mod == "first" else "other"
+        turn = "player" if mod == "duo" else "other"
 
         while True:
             print_board()
 
             if turn == "player":
                 try:
-                    pos = int(input("What position? (1 - 9): "))
+                    pos = int(input(f"Player : {player} What position? (1 - 9): "))
                     if pos < 1 or pos > 9:
                         print("That is an invalid spot!")
                         continue
@@ -230,29 +228,40 @@ def play_mode(mod, player, level, enemy_char, score):
 
                     if check_win(player):
                         print_board()
-                        print("You WIN!!!")
+                        print(f"{player} WIN!!!")
                         score += 1
                         return score
 
-                    turn = "enemy"
+                    turn = "other"
+
                 except ValueError:
                     print("Invalid :(")
 
             elif turn == "other":
 
-                if check_win(enemy_char):
-                    print_board()
-                    print("Enemy wins!")
-                    return score - 1
-                turn = "player"
+                try:
+                    pos = int(input(f"Player : {enemy_char} What position? (1 - 9): "))
+                    if pos < 1 or pos > 9:
+                        print("That is an invalid spot!")
+                        continue
 
-            if " " not in board:
-                print_board()
-                print("It's a draw!")
-                return score
+                    index = pos - 1
+                    if board[index] != " ":
+                        print("That spot is taken!")
+                        continue
 
+                    board[index] =enemy_char
 
+                    if check_win(enemy_char):
+                        print_board()
+                        print(f"{enemy_char} WIN!!!")
+                        score += 1
+                        return score
 
+                    turn = "player"
+
+                except ValueError:
+                    print("Invalid :(")
 
 
 def game_loop():
@@ -262,16 +271,15 @@ def game_loop():
     score = 0
 
     gm_mode = mode()
+    player = character_selection()
     if gm_mode != "duo":
         level = selection()
-    player = character_selection()
-
-    other = character_selection()
-
-    if gm_mode != "duo":
         enemy_char = choose_enemy_char(player)
         print(f"Your Opponent will be: {enemy_char}")
         return play_mode(gm_mode, player, level, enemy_char, score)
+    else:
+        other = character_selection()
+        return play_mode(gm_mode, player, None, other, score)
 
 
 def main():
