@@ -1,5 +1,7 @@
 """Math Dungeon version 1."""
 
+print("")
+
 import random
 
 maths_level = 1
@@ -52,5 +54,6 @@ while enemies:
     if lives < 0:
         print("YOU LOST")
         break
+
 if lives > 0:
     print("YOU WON :)")
