@@ -50,6 +50,8 @@ class Math:
         self.q_type = q_type
         self.question_text, self.answer = self.generate_question()
 
+    def non_zero(self, low, high):
+        return r.choice([i for i in range(low, high + 1) if i != 0])
 
     def generate_question(self):
         if self.q_type == "numbers":
@@ -65,10 +67,10 @@ class Math:
 
     def generate_numbers(self):
         if self.level < 2:
-            a,b = r.randint(1, 10), r.randint(1, 20)
+            a,b = r.randint(-10, 10), r.randint(-20, 20)
             op = r.choice(["+", "-", "*"])
         else:
-            a,b = r.randint(2,25), r.randint(3,30)
+            a,b = r.randint(-8,25), r.randint(-34,30)
             op = r.choice(["+", "-", "*", "/"])
 
         return f"{a} {op} {b}", eval(f"{a}{op}{b}")
@@ -88,29 +90,58 @@ class Math:
                 return (f"Find the length of the rectangle when the area is {a} and the width is {b}",
                         eval(f"{a} / {b}"))
             else:
-                return None
+                a, b = r.randint(5, 10), r.randint(7, 10)
+                return f"Find the area of the rectangle when the length and width are {a},{b}", eval(f"{a} * {b}")
         else:
             return None
 
 
     def generate_graphing(self):
-        pass
+        choices = r.choice(["functions", "quartic"])
+        if self.level > 8:
+            match choices:
+                case "functions":
+                    a,b,c,d = (self.non_zero(-3, 7) for _ in range(4))
+                    op, op1, op2 = tuple(r.choice(["+", "-"])for _ in range(3))
+                    x = self.non_zero(-5,5)
+                    question_text = f"Find f({x}) if f(x) = {a}x^3 {op} {b}x^2 {op1} {c}x {op2} {d} "
+
+                    question_text = question_text.replace("+ -", "- ")
+                    question_text = question_text.replace("- -", "+ ")
+                    answer = eval(f"({a})*({x})**3 {op} ({b})*({x})**2 {op1} ({c})*({x}) {op2} ({d})")
+                    return question_text, answer
+                case "quartic":
+                    a, b, c, d, e = tuple(self.non_zero(-3, 7) for _ in range(5))
+                    op, op1, op2, op3 = tuple(r.choice(["+", "-"]) for _ in range(4))
+                    x = self.non_zero(-5, 5)
+                    question_text = f"Find f({x}) if f(x) = {a}x^4 {op} {b}x^3 {op1} {c}x^2 {op2} {d}x {op3} {e} "
+
+                    question_text = question_text.replace("+ -", "- ")
+                    question_text = question_text.replace("- -", "+ ")
+                    answer = eval(f"({a})*({x})**4 {op} "
+                                  f"({b})*({x})**3 {op1} ({c})*({x})**2 {op2} ({d})*({x}) {op3} {e}")
+                    return question_text, answer
+
+        else:
+            return None
 
     def generate_algebra(self):
         pass
 
 
 
-question = Math(6,4,"geometry")
+question = Math(9,0,"graphing")
 print("Question: ", question.question_text)
 
 user_answer = float(input("Your answer: "))
-
-if user_answer == question.answer:
-    print("Correct")
-else:
-    print("WRONG")
-    print("The right answer was:", question.answer)
+try:
+    if round(user_answer, 2) == round(question.answer, 2):
+        print("Correct")
+    else:
+        print("WRONG")
+        print("The right answer was:", question.answer)
+except ValueError:
+    print("Please enter a valid number")
 
 
 
