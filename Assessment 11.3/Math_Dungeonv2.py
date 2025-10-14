@@ -36,7 +36,6 @@ class Boss:
         print("\nA GOD HAS ARRIVED! ")
         print(f"{self.name} with level {self.difficulty} has come to take your Soul!")
 
-
 boss_list = [
     Boss("Ace", 6),
     Boss("Legendary", 7),
@@ -50,6 +49,7 @@ class Math:
         self.length = q_length
         self.q_type = q_type
         self.question_text, self.answer = self.generate_question()
+
 
 
     def generate_question(self):
