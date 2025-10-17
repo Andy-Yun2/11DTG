@@ -15,15 +15,6 @@ class Enemy:
         print(f"{self.name} attacks with difficulty: {self.difficulty}!")
 
 
-enemy_list = [
-    Enemy("Novice", 1),
-    Enemy("Adept", 2),
-    Enemy("Professional", 3),
-    Enemy("Expert", 4),
-    Enemy("Master", 5),
-]
-
-
 class Boss:
 
     def __init__(self, name, difficulty):
@@ -36,12 +27,6 @@ class Boss:
         print("\nA GOD HAS ARRIVED! ")
         print(f"{self.name} with level {self.difficulty} has come to take your Soul!")
 
-boss_list = [
-    Boss("Ace", 6),
-    Boss("Legendary", 7),
-    Boss("Conqueror", 8),
-    Boss("Masochist", 9),
-]
 
 class Math:
     def __init__(self, level, q_length, q_type):
@@ -57,13 +42,13 @@ class Math:
         if self.q_type == "numbers":
             return self.generate_numbers()
         elif self.q_type == "geometry":
-            return self.generate_geometry()
+            return self.generate_geometry() and self.level >= 2
         elif self.q_type == "graphing":
-            return self.generate_graphing()
+            return self.generate_graphing() and self.level >= 8
         elif self.q_type == "algebra":
             return self.generate_algebra()
         else:
-            return None
+            return self.generate_numbers()
 
     def generate_numbers(self):
         if self.level < 2:
@@ -76,7 +61,9 @@ class Math:
         return f"{a} {op} {b}", eval(f"{a}{op}{b}")
 
     def generate_geometry(self):
-        if 5 < self.level < 9:
+        if self.level == 1:
+            return self.generate_algebra()
+        if 2 < self.level < 6:
             choices = r.choice(["area", "volume", "length"])
             if choices == "area":
                 a, b = r.randint(5, 10 * self.level), r.randint(7, 20 * self.level)
@@ -97,10 +84,10 @@ class Math:
 
 
     def generate_graphing(self):
-        choices = r.choice(["functions", "quartic"])
+        choices = r.choice(["cubic", "quartic"])
         if self.level > 8:
             match choices:
-                case "functions":
+                case "cubic":
                     a,b,c,d = (self.non_zero(-3, 7) for _ in range(4))
                     op, op1, op2 = tuple(r.choice(["+", "-"])for _ in range(3))
                     x = self.non_zero(-5,5)
@@ -119,29 +106,80 @@ class Math:
                     question_text = question_text.replace("+ -", "- ")
                     question_text = question_text.replace("- -", "+ ")
                     answer = eval(f"({a})*({x})**4 {op} "
-                                  f"({b})*({x})**3 {op1} ({c})*({x})**2 {op2} ({d})*({x}) {op3} {e}")
+                                  f"({b})*({x})**3 {op1}"
+                                  f"({c})*({x})**2 {op2}"
+                                  f" ({d})*({x}) {op3} {e}")
                     return question_text, answer
-
         else:
             return None
 
     def generate_algebra(self):
-        pass
+        reverse_op = {
+            "+" : "-",
+            "-" : "+",
+            "*" : "/",
+            "/" : "*"
+        }
+        if self.level < 3:
+            a,b = tuple(self.non_zero(-20, 20) for _ in range(2))
+            op = r.choice(["+","-"])
+            ans_op = "+" if op == "-" else "-"
+            question_text = f"Solve the equation and find x: {a} {op} x = {b}"
+            ans = eval(f"{b} {ans_op} {a}")
+            return question_text, ans
+        elif 3 <= self.level < 5:
+            a, b = tuple(self.non_zero(-20, 20) for _ in range(2))
+            op = r.choice(["+", "-", "*", "/"])
+            ans_op = reverse_op[op]
+            question_text = f"Solve the equation and find x: {a} {op} x = {b}"
+            ans = eval(f"{b} {ans_op} {a}")
+            return question_text, ans
+        elif 5 <= self.level < 10:
+            a, b, c, d, e = tuple(self.non_zero(-20, 20) for _ in range(5))
+            op, op1, op2 = tuple(r.choice(["+", "-", "*", "/"]) for _ in range(3) )
+            ans_op, ans_op1 = reverse_op[op], reverse_op[op1]
+            question_text = f"Solve the equation and find x: {a} {op} x {op1} {e} = {c} {op2} {d}"
+            ans = eval(f"({c} {op2} {d}) {ans_op1} {e} {ans_op} {a}")
+            return question_text, ans
+        else:
+            question_text = "level too high"
+            ans = "none"
+            return question_text, ans
 
+enemy_list = [
+    Enemy("Novice", 1),
+    Enemy("Adept", 2),
+    Enemy("Professional", 3),
+    Enemy("Expert", 4),
+    Enemy("Master", 5),
+]
 
+boss_list = [
+    Boss("Ace", 6),
+    Boss("Legendary", 7),
+    Boss("Conqueror", 8),
+    Boss("Masochist", 9),
+]
 
-question = Math(9,0,"graphing")
-print("Question: ", question.question_text)
+print("Welcome to math dungeon improved version :)")
 
-user_answer = float(input("Your answer: "))
-try:
-    if round(user_answer, 2) == round(question.answer, 2):
-        print("Correct")
-    else:
-        print("WRONG")
-        print("The right answer was:", question.answer)
-except ValueError:
-    print("Please enter a valid number")
+# Loop through all enemies and bosses
+for enemy in enemy_list + boss_list:
+    print(f"\nYou encounter {enemy.name} (Level {enemy.difficulty})!")
+
+    # Generate a math question based on the enemy's difficulty
+    question = Math(enemy.difficulty, 0, r.choice(["algebra", "geometry", "graphing", "numbers"]))
+    print("Question:", question.question_text)
+
+    try:
+        user_answer = float(input("Your answer: "))
+        if round(user_answer, 2) == round(question.answer, 2):
+            print("Correct! You defeated the", enemy.name)
+        else:
+            print("Wrong! The correct answer was:", round(question.answer, 2))
+            print("The", enemy.name, "dodges your attack!")
+    except ValueError:
+        print("Please enter a valid number.")
 
 
 
