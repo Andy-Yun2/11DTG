@@ -42,9 +42,9 @@ class Math:
         if self.q_type == "numbers":
             return self.generate_numbers()
         elif self.q_type == "geometry":
-            return self.generate_geometry() and self.level >= 2
+            return self.generate_geometry()
         elif self.q_type == "graphing":
-            return self.generate_graphing() and self.level >= 8
+            return self.generate_graphing()
         elif self.q_type == "algebra":
             return self.generate_algebra()
         else:
@@ -63,7 +63,7 @@ class Math:
     def generate_geometry(self):
         if self.level == 1:
             return self.generate_algebra()
-        if 2 < self.level < 6:
+        if 2 <= self.level <= 9:
             choices = r.choice(["area", "volume", "length"])
             if choices == "area":
                 a, b = r.randint(5, 10 * self.level), r.randint(7, 20 * self.level)
@@ -84,11 +84,34 @@ class Math:
 
 
     def generate_graphing(self):
-        choices = r.choice(["cubic", "quartic"])
-        if self.level > 8:
+        choices = r.choice(["cubic", "quartic", "quadratic"])
+        if self.level > 0:
             match choices:
+                case "linear":
+                    # Linear question
+                    a, b = (self.non_zero(-3, 7) for _ in range(2))
+                    op = r.choice(["+", "-"])
+                    x = self.non_zero(-5, 5)
+                    question_text = f"Find f({x}) if f(x) = {a}x {op} {b}"
+
+                    question_text = question_text.replace("+ -", "- ")
+                    question_text = question_text.replace("- -", "+ ")
+                    answer = eval(f"({a})*({x}) {op} ({b})")
+                    return question_text, answer
+                case "quadratic":
+                    # Quadratic question
+                    a, b, c = (self.non_zero(-3, 7) for _ in range(3))
+                    op, op1 = tuple(r.choice(["+", "-"]) for _ in range(2))
+                    x = self.non_zero(-5, 5)
+                    question_text = f"Find f({x}) if f(x) = {a}x^2 {op} {b}x {op1} {c}"
+
+                    question_text = question_text.replace("+ -", "- ")
+                    question_text = question_text.replace("- -", "+ ")
+                    answer = eval(f"({a})*({x})**2 {op} ({b})*({x}) {op1} ({c})")
+                    return question_text, answer
                 case "cubic":
-                    a,b,c,d = (self.non_zero(-3, 7) for _ in range(4))
+                    # Cubic question
+                    a, b, c, d = (self.non_zero(-3, 7) for _ in range(4))
                     op, op1, op2 = tuple(r.choice(["+", "-"])for _ in range(3))
                     x = self.non_zero(-5,5)
                     question_text = f"Find f({x}) if f(x) = {a}x^3 {op} {b}x^2 {op1} {c}x {op2} {d} "
@@ -98,6 +121,7 @@ class Math:
                     answer = eval(f"({a})*({x})**3 {op} ({b})*({x})**2 {op1} ({c})*({x}) {op2} ({d})")
                     return question_text, answer
                 case "quartic":
+                    # Quartic question
                     a, b, c, d, e = tuple(self.non_zero(-3, 7) for _ in range(5))
                     op, op1, op2, op3 = tuple(r.choice(["+", "-"]) for _ in range(4))
                     x = self.non_zero(-5, 5)
@@ -161,7 +185,7 @@ boss_list = [
     Boss("Masochist", 9),
 ]
 
-print("Welcome to math dungeon improved version :)")
+print("Welcome to math dungeon :)")
 
 # Loop through all enemies and bosses
 for enemy in enemy_list + boss_list:
@@ -177,7 +201,7 @@ for enemy in enemy_list + boss_list:
             print("Correct! You defeated the", enemy.name)
         else:
             print("Wrong! The correct answer was:", round(question.answer, 2))
-            print("The", enemy.name, "dodges your attack!")
+            print("The", enemy.name, "Blocked your attack!")
     except ValueError:
         print("Please enter a valid number.")
 
