@@ -27,12 +27,19 @@ class Boss:
         print("\nA GOD HAS ARRIVED! ")
         print(f"{self.name} with level {self.difficulty} has come to take your Soul!")
 
+def pick_question_type(level):
+    if level >= 5:
+        allowed = ["geometry", "algebra","graphing"]
+    else:
+        allowed = ["numbers", "algebra"]
+    return r.choice(allowed)
+
 
 class Math:
-    def __init__(self, level, q_length, q_type):
+    def __init__(self, level, q_length):
         self.level = level
         self.length = q_length
-        self.q_type = q_type
+        self.q_type = pick_question_type(level)
         self.question_text, self.answer = self.generate_question()
 
     def non_zero(self, low, high):
@@ -84,8 +91,8 @@ class Math:
 
 
     def generate_graphing(self):
-        choices = r.choice(["cubic", "quartic", "quadratic"])
-        if self.level > 0:
+        choices = r.choice(["cubic", "quartic", "quadratic", "linear"])
+        if self.level < 6:
             match choices:
                 case "linear":
                     # Linear question
@@ -109,6 +116,8 @@ class Math:
                     question_text = question_text.replace("- -", "+ ")
                     answer = eval(f"({a})*({x})**2 {op} ({b})*({x}) {op1} ({c})")
                     return question_text, answer
+        elif self.level > 6:
+            match choices:
                 case "cubic":
                     # Cubic question
                     a, b, c, d = (self.non_zero(-3, 7) for _ in range(4))
@@ -138,32 +147,54 @@ class Math:
             return None
 
     def generate_algebra(self):
+        safe_math = {
+            "__builtins__" : None,
+            "sqrt" : m.sqrt,
+            "pi" : m.pi
+        }
         reverse_op = {
             "+" : "-",
             "-" : "+",
             "*" : "/",
-            "/" : "*"
+            "/" : "*",
+            "**" : "sqrt",
+            "sqrt" : "**"
         }
         if self.level < 3:
             a,b = tuple(self.non_zero(-20, 20) for _ in range(2))
             op = r.choice(["+","-"])
-            ans_op = "+" if op == "-" else "-"
-            question_text = f"Solve the equation and find x: {a} {op} x = {b}"
-            ans = eval(f"{b} {ans_op} {a}")
-            return question_text, ans
-        elif 3 <= self.level < 5:
-            a, b = tuple(self.non_zero(-20, 20) for _ in range(2))
-            op = r.choice(["+", "-", "*", "/"])
             ans_op = reverse_op[op]
             question_text = f"Solve the equation and find x: {a} {op} x = {b}"
-            ans = eval(f"{b} {ans_op} {a}")
+            if op == "-":
+                ans = eval(f"{a} {op} {b}")
+            else:
+                ans = eval(f"{b} {ans_op} {a}")
             return question_text, ans
+        elif 3 <= self.level < 5:
+            sec_choice = r.randint(1,100)
+            if sec_choice >= 100:
+                a, b = tuple(self.non_zero(-20, 20) for _ in range(2))
+                op = r.choice(["+", "-", "*", "/"])
+                ans_op = reverse_op[op]
+                question_text = f"Solve the equation and find x: {a} {op} x = {b}"
+                ans = eval(f"{b} {ans_op} {a}")
+                return question_text, ans
+            else:
+                a, b, c = tuple(self.non_zero(-20, 20) for _ in range(3))
+                op = r.choice(["+", "-", "*", "/"])
+                special_op = "sqrt"
+                ans_op = reverse_op[op]
+                question_text = f"Solve the equation and find x: {special_op}({a}) {op} {b} = x {op} {c}"
+                expr = f"sqrt({a}) {op} {b} {ans_op} {c}"
+                ans = eval(expr, safe_math)
+                return question_text, ans
+
         elif 5 <= self.level < 10:
             a, b, c, d, e = tuple(self.non_zero(-20, 20) for _ in range(5))
             op, op1, op2 = tuple(r.choice(["+", "-", "*", "/"]) for _ in range(3) )
             ans_op, ans_op1 = reverse_op[op], reverse_op[op1]
             question_text = f"Solve the equation and find x: {a} {op} x {op1} {e} = {c} {op2} {d}"
-            ans = eval(f"({c} {op2} {d}) {ans_op1} {e} {ans_op} {a}")
+            ans = eval(f"(({c} {op2} {d}) {ans_op1} {e}) {ans_op} {a}")
             return question_text, ans
         else:
             question_text = "level too high"
@@ -172,16 +203,24 @@ class Math:
 
 enemy_list = [
     Enemy("Novice", 1),
-    Enemy("Adept", 2),
-    Enemy("Professional", 3),
-    Enemy("Expert", 4),
-    Enemy("Master", 5),
+    Enemy("Easy", 1),
+    Enemy("Beginner", 2),
+    Enemy("Normal", 2),
+    Enemy("Learner", 3),
+    Enemy("Intermediate",3),
+    Enemy("Adept", 4),
+    Enemy("Skilled", 5),
+    Enemy("Advanced", 5)
 ]
 
 boss_list = [
+    Boss("Professional", 6),
     Boss("Ace", 6),
+    Boss("Expert", 7),
     Boss("Legendary", 7),
+    Boss("Master", 8),
     Boss("Conqueror", 8),
+    Boss("Eternity",9),
     Boss("Masochist", 9),
 ]
 
@@ -192,7 +231,7 @@ for enemy in enemy_list + boss_list:
     print(f"\nYou encounter {enemy.name} (Level {enemy.difficulty})!")
 
     # Generate a math question based on the enemy's difficulty
-    question = Math(enemy.difficulty, 0, r.choice(["algebra", "geometry", "graphing", "numbers"]))
+    question = Math(enemy.difficulty, 0)
     print("Question:", question.question_text)
 
     try:
@@ -205,5 +244,6 @@ for enemy in enemy_list + boss_list:
     except ValueError:
         print("Please enter a valid number.")
 
+print("CONGRATULATIONS, YOU WON!!!!!!!!!!!!!")
 
 
