@@ -34,10 +34,18 @@ while playing:
 
     elif choice == "BlackJack":
         result_cards = BlackJack_v2.main(player_name)
+        if result_cards == "think":
+            print(f"Welcome back, {player_name}")
+            continue
         if result_cards != 0 and top_score_cards == 0:
             top_score_cards = result_cards
-    elif choice == "Tik Tak Toe":
-        TikTakToev2.main(player_name)
 
+    elif choice == "Tik Tak Toe":
+        result_wins = TikTakToev2.main(player_name)
+        if result_wins == "think":
+            print(f"Welcome back, {player_name}")
+            continue
+        if result_wins != 0 and top_score_wins == 0:
+            top_score_wins = result_wins
     elif choice == "Math Dungeon":
         Math_Dungeonv2.main(player_name)

@@ -229,7 +229,7 @@ def main(name):
     start_ = input(f"Ready to start {name}? (y/n): ").lower()
     if start_ not in ("y", "yes"):
         print(f"No worries {name}:) Take your time. Come back when you're ready!")
-        return 0
+        return "think"
 
     # Loop through all enemies and bosses
     for enemy in enemy_list + boss_list:
