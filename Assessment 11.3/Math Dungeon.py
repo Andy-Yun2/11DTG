@@ -1,7 +1,5 @@
 """Math Dungeon version 1."""
 
-print("")
-
 import random
 
 maths_level = 1

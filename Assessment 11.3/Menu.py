@@ -1,10 +1,11 @@
-import TikTakToev2, BlackJack_v2, Math_Dungeonv2
+import TikTakToev2, BlackJack_v2, Math_Dungeonv2, highscores
 
 print("----------Welcome to Game Compendium 101!----------")
 
 top_score_cards = 0
 top_score_wins = 0
 top_score_math = 0
+
 
 # Ask for player name once
 player_name = input("Please enter your name: ").strip().capitalize()
@@ -23,6 +24,9 @@ def show_games():
 
 while playing:
     show_games()
+
+    highscores.HighScores.show()
+
     choice = input(f"\nHey {player_name}, which game do you want to play? (type 'exit' to quit): ").strip()
 
     if choice.lower() == "exit":
@@ -33,19 +37,20 @@ while playing:
         print("Invalid game, please select one from the list.")
 
     elif choice == "BlackJack":
-        result_cards = BlackJack_v2.main(player_name)
-        if result_cards == "think":
-            print(f"Welcome back, {player_name}")
-            continue
-        if result_cards != 0 and top_score_cards == 0:
-            top_score_cards = result_cards
+        if BlackJack_v2.main(player_name) == 0:
+            print("\nHaven't decided yet?")
+        else:
+            print("\nWelcome back! Wanna try something else?")
 
     elif choice == "Tik Tak Toe":
-        result_wins = TikTakToev2.main(player_name)
-        if result_wins == "think":
-            print(f"Welcome back, {player_name}")
-            continue
-        if result_wins != 0 and top_score_wins == 0:
-            top_score_wins = result_wins
+        if TikTakToev2.main(player_name) == 0:
+            print("\nHaven't decided yet?")
+        else:
+            print("\nWelcome back! Wanna try something else?")
+
     elif choice == "Math Dungeon":
-        Math_Dungeonv2.main(player_name)
+        if Math_Dungeonv2.main(player_name) == 0:
+            print("\nHaven't decided yet?")
+        else:
+            print("\nWelcome back! Wanna try something else?")
+

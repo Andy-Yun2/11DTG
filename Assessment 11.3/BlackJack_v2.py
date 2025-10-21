@@ -1,4 +1,5 @@
 import random
+import highscores
 
 suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
@@ -180,8 +181,8 @@ def main(name):
 
     start_ = input(f"Are you ready {name}? (y/n) ").lower()
     if start_ not in ("yes", "y"):
-        print("Dont rush, Take your time to think, you are always welcome here.")
-        return "think"
+        print("Dont rush, Take your time to think, you are always welcomed here.")
+        return 0
     print(f"Good luck :)")
 
     balance = 1000
@@ -193,8 +194,9 @@ def main(name):
         cont = input(f"Wanna play again {name}? (y/n): ").lower()
         if cont == 'n':
             break
-    print(f"Game over! Final balance: {balance} cards")
-    return balance
+    highscores.HighScores.save("BlackJack", name, balance)
+    highscores.HighScores.show("BlackJack")
+    return 1
 
 if __name__ == "__main__":
     player_name = input("Enter your name: ")

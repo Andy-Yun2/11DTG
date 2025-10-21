@@ -1,6 +1,7 @@
 """Tic-Tac-Toe Game (TOE)."""
 
 import random
+import highscores
 
 board = [" "] * 9
 win = [
@@ -310,7 +311,7 @@ def main(name):
     start_ = input("Are you ready for this exciting game? ")
     if start_ not in ("y", "yes"):
         print(f"See you later {name}")
-        return "thinking"
+        return 0
     print("Lets see how good you are! ")
 
     score = 0
@@ -320,7 +321,9 @@ def main(name):
         repeat = input("Play again? y/n ").lower()
         if repeat != "y":
             print("Thank You for Playing.")
-            return score
+            highscores.HighScores.save("Tik Tak Toe", name, score)
+            highscores.HighScores.show("Tik Tak Toe")
+            return 1
 
 
 if __name__ == "__main__":

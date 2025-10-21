@@ -1,7 +1,8 @@
 """"Math Dungeon v2."""
 
 import random as r
-import math as m
+import highscores
+import sympy as sp
 
 class Enemy:
 
@@ -137,56 +138,64 @@ class Math:
             return None
 
     def generate_algebra(self):
-        safe_math = {
-            "__builtins__" : None,
-            "sqrt" : m.sqrt,
-            "pi" : m.pi
-        }
-        reverse_op = {
-            "+" : "-",
-            "-" : "+",
-            "*" : "/",
-            "/" : "*",
-            "**" : "sqrt",
-            "sqrt" : "**"
-        }
+        x = sp.symbols('x')  # Define x as a variable
         if self.level < 3:
-            a,b = tuple(self.non_zero(-20, 20) for _ in range(2))
-            op = r.choice(["+","-"])
-            ans_op = reverse_op[op]
+            # Simple linear equations: a ± x = b
+            a, b = tuple(self.non_zero(-20, 20) for _ in range(2))
+            op = r.choice(["+", "-"])
             question_text = f"Solve the equation and find x: {a} {op} x = {b}"
-            if op == "-":
-                ans = eval(f"{a} {op} {b}")
-            else:
-                ans = eval(f"{b} {ans_op} {a}")
+            # Build the equation using SymPy
+            left_expr = a + x if op == "+" else a - x
+            right_expr = b
+            solution = sp.solve(sp.Eq(left_expr, right_expr), x)
+            ans = float(solution[0])
             return question_text, ans
         elif 3 <= self.level < 5:
-            sec_choice = r.randint(1,100)
-            if sec_choice >= 100:
-                a, b = tuple(self.non_zero(-20, 20) for _ in range(2))
-                op = r.choice(["+", "-", "*", "/"])
-                ans_op = reverse_op[op]
-                question_text = f"Solve the equation and find x: {a} {op} x = {b}"
-                ans = eval(f"{b} {ans_op} {a}")
-                return question_text, ans
+            # Linear with optional sqrt: sqrt(a) ± b = x ± c
+            a = r.choice([1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144])
+            b, c = tuple(self.non_zero(-20, 20) for _ in range(2))
+            op = r.choice(["+", "-", "*", "/"])
+            # Choose randomly if sqrt is applied to left or right
+            if r.choice([True, False]):
+                left_expr = sp.sqrt(a) + b if op == "+" else sp.sqrt(a) - b
+                right_expr = x + c if op == "+" else x - c
             else:
-                a = r.choice([16,25,81,100,1,4,9,36,48,64,121,144])
-                b, c = tuple(self.non_zero(-20, 20) for _ in range(2))
-                op = r.choice(["+", "-", "*", "/"])
-                special_op = "sqrt"
-                ans_op = reverse_op[op]
-                question_text = f"Solve the equation and find x: {special_op}({a}) {op} {b} = x {op} {c}"
-                expr = f"sqrt({a}) {op} {b} {ans_op} {c}"
-                ans = eval(expr, safe_math)
-                return question_text, ans
-
-        elif 5 <= self.level < 10:
-            a, b, c, d, e = tuple(self.non_zero(-20, 20) for _ in range(5))
-            op, op1, op2 = tuple(r.choice(["+", "-", "*", "/"]) for _ in range(3) )
-            ans_op, ans_op1 = reverse_op[op], reverse_op[op1]
-            question_text = f"Solve the equation and find x: {a} {op} x {op1} {e} = {c} {op2} {d}"
-            ans = eval(f"(({c} {op2} {d}) {ans_op1} {e}) {ans_op} {a}")
+                left_expr = x + b if op == "+" else x - b
+                right_expr = sp.sqrt(a) + c if op == "+" else sp.sqrt(a) - c
+            question_text = f"Solve the equation and find x: {left_expr} = {right_expr}"
+            solution = sp.solve(sp.Eq(left_expr, right_expr), x)
+            ans = float(solution[0])
             return question_text, ans
+        elif 5 <= self.level < 10:
+
+            a, b, c, d = r.randint(1, 10), r.randint(-10, 10), r.randint(-10, 10), r.randint(-10, 10)
+            op1, op2 = r.choice(["+", "-", "*", "/"]), r.choice(["+", "-", "*", "/"])
+
+            lhs = a * x if op1 in ["*", "/"] else x
+            if op1 == "+":
+                lhs = lhs + b
+            elif op1 == "-":
+                lhs = lhs - b
+            elif op1 == "*":
+                lhs = lhs * b
+            elif op1 == "/":
+                lhs = lhs / b
+
+            if op2 == "+":
+                lhs = lhs + c
+            elif op2 == "-":
+                lhs = lhs - c
+            elif op2 == "*":
+                lhs = lhs * c
+            elif op2 == "/":
+                lhs = lhs / c
+
+            rhs = d
+            eq = sp.Eq(lhs, rhs)
+            solution = sp.solve(eq, x)[0]
+
+            question = f"Solve for x: {eq}"
+            return question, float(solution)
         else:
             question_text = "level too high"
             ans = "none"
@@ -229,7 +238,7 @@ def main(name):
     start_ = input(f"Ready to start {name}? (y/n): ").lower()
     if start_ not in ("y", "yes"):
         print(f"No worries {name}:) Take your time. Come back when you're ready!")
-        return "think"
+        return 0
 
     # Loop through all enemies and bosses
     for enemy in enemy_list + boss_list:
@@ -240,7 +249,7 @@ def main(name):
         print("Question:", question.question_text)
 
         if lives < 1:
-            print(f"Bad luck {name} try again next time!")
+            print(f"Bad luck. try again next time!")
             return -1
         try:
             user_answer = float(input("Your answer: "))
@@ -251,11 +260,14 @@ def main(name):
                 lives -= 1
                 print("Wrong! The correct answer was:", round(question.answer, 2))
                 print("The", enemy.name, "Blocked your attack!")
+                print(f"Your lives : {lives}")
         except ValueError:
             print("Please enter a valid number.")
 
-    print(f"CONGRATULATIONS, {name} YOU WON! :D")
-    return 0
+    print(f"congratulations, you beat all the enemies! :D")
+    highscores.HighScores.save("Math Dungeon", name, lives)
+    highscores.HighScores.show("Math Dungeon")
+    return 1
 
 
 if __name__ == "__main__":
