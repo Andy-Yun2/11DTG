@@ -11,10 +11,6 @@ class Enemy:
         self.hp = difficulty * 2
 
 
-    def enemy_attack(self):
-        print(f"{self.name} attacks with difficulty: {self.difficulty}!")
-
-
 class Boss:
 
     def __init__(self, name, difficulty):
@@ -23,24 +19,20 @@ class Boss:
         self.hp = difficulty + difficulty * 10
 
 
-    def boss_attack(self):
-        print("\nA GOD HAS ARRIVED! ")
-        print(f"{self.name} with level {self.difficulty} has come to take your Soul!")
-
-def pick_question_type(level):
-    if level >= 5:
-        allowed = ["geometry", "algebra","graphing"]
-    else:
-        allowed = ["numbers", "algebra"]
-    return r.choice(allowed)
-
 
 class Math:
     def __init__(self, level, q_length):
         self.level = level
         self.length = q_length
-        self.q_type = pick_question_type(level)
+        self.q_type = self.pick_question_type(level)
         self.question_text, self.answer = self.generate_question()
+
+    def pick_question_type(self, level):
+        if level >= 5:
+            allowed = ["geometry", "algebra", "graphing"]
+        else:
+            allowed = ["numbers", "algebra"]
+        return r.choice(allowed)
 
     def non_zero(self, low, high):
         return r.choice([i for i in range(low, high + 1) if i != 0])
@@ -68,8 +60,6 @@ class Math:
         return f"{a} {op} {b}", eval(f"{a}{op}{b}")
 
     def generate_geometry(self):
-        if self.level == 1:
-            return self.generate_algebra()
         if 2 <= self.level <= 9:
             choices = r.choice(["area", "volume", "length"])
             if choices == "area":
@@ -116,7 +106,7 @@ class Math:
                     question_text = question_text.replace("- -", "+ ")
                     answer = eval(f"({a})*({x})**2 {op} ({b})*({x}) {op1} ({c})")
                     return question_text, answer
-        elif self.level > 6:
+        elif self.level >= 6:
             match choices:
                 case "cubic":
                     # Cubic question
@@ -180,7 +170,8 @@ class Math:
                 ans = eval(f"{b} {ans_op} {a}")
                 return question_text, ans
             else:
-                a, b, c = tuple(self.non_zero(-20, 20) for _ in range(3))
+                a = r.choice([16,25,81,100,1,4,9,36,48,64,121,144])
+                b, c = tuple(self.non_zero(-20, 20) for _ in range(2))
                 op = r.choice(["+", "-", "*", "/"])
                 special_op = "sqrt"
                 ans_op = reverse_op[op]
@@ -201,49 +192,72 @@ class Math:
             ans = "none"
             return question_text, ans
 
-enemy_list = [
-    Enemy("Novice", 1),
-    Enemy("Easy", 1),
-    Enemy("Beginner", 2),
-    Enemy("Normal", 2),
-    Enemy("Learner", 3),
-    Enemy("Intermediate",3),
-    Enemy("Adept", 4),
-    Enemy("Skilled", 5),
-    Enemy("Advanced", 5)
-]
 
-boss_list = [
-    Boss("Professional", 6),
-    Boss("Ace", 6),
-    Boss("Expert", 7),
-    Boss("Legendary", 7),
-    Boss("Master", 8),
-    Boss("Conqueror", 8),
-    Boss("Eternity",9),
-    Boss("Masochist", 9),
-]
+def main(name):
+    lives = 5
+    enemy_list = [
+        Enemy("Novice", 1),
+        Enemy("Easy", 1),
+        Enemy("Beginner", 2),
+        Enemy("Normal", 2),
+        Enemy("Learner", 3),
+        Enemy("Intermediate", 3),
+        Enemy("Adept", 4),
+        Enemy("Skilled", 5),
+        Enemy("Advanced", 5)
+    ]
 
-print("Welcome to math dungeon :)")
+    boss_list = [
+        Boss("Professional", 6),
+        Boss("Ace", 6),
+        Boss("Expert", 7),
+        Boss("Legendary", 7),
+        Boss("Master", 8),
+        Boss("Conqueror", 8),
+        Boss("Eternity", 9),
+        Boss("Masochist", 9),
+    ]
+    print(f"\nHELLO {name}! Welcome to Math Dungeon !!!!!")
+    print("=== Instructions ===")
+    print("1. You will face a series of enemies and bosses, each with a difficulty level.")
+    print("2. To defeat an enemy, solve the math question they present.")
+    print("3. You start with 5 lives. Each wrong answer costs you 1 life.")
+    print("4. Answer as accurately as possible. Make sure all the answers are rounded to 2 decimal places.")
+    print("5. If you lose all your lives, the game ends. Defeat all enemies to win!")
+    print("6. Have fun and challenge your math skills! :D\n")
 
-# Loop through all enemies and bosses
-for enemy in enemy_list + boss_list:
-    print(f"\nYou encounter {enemy.name} (Level {enemy.difficulty})!")
+    start_ = input(f"Ready to start {name}? (y/n): ").lower()
+    if start_ not in ("y", "yes"):
+        print(f"No worries {name}:) Take your time. Come back when you're ready!")
+        return 0
 
-    # Generate a math question based on the enemy's difficulty
-    question = Math(enemy.difficulty, 0)
-    print("Question:", question.question_text)
+    # Loop through all enemies and bosses
+    for enemy in enemy_list + boss_list:
+        print(f"\nYou encounter {enemy.name} (Level {enemy.difficulty})!")
 
-    try:
-        user_answer = float(input("Your answer: "))
-        if round(user_answer, 2) == round(question.answer, 2):
-            print("Correct! You defeated the", enemy.name)
-        else:
-            print("Wrong! The correct answer was:", round(question.answer, 2))
-            print("The", enemy.name, "Blocked your attack!")
-    except ValueError:
-        print("Please enter a valid number.")
+        # Generate a math question based on the enemy's difficulty
+        question = Math(enemy.difficulty, 0)
+        print("Question:", question.question_text)
 
-print("CONGRATULATIONS, YOU WON!!!!!!!!!!!!!")
+        if lives < 1:
+            print(f"Bad luck {name} try again next time!")
+            return -1
+        try:
+            user_answer = float(input("Your answer: "))
+            if round(user_answer, 2) == round(question.answer, 2):
+                print("Correct! You defeated the", enemy.name)
+
+            else:
+                lives -= 1
+                print("Wrong! The correct answer was:", round(question.answer, 2))
+                print("The", enemy.name, "Blocked your attack!")
+        except ValueError:
+            print("Please enter a valid number.")
+
+    print(f"CONGRATULATIONS, {name} YOU WON! :D")
+    return 0
 
 
+if __name__ == "__main__":
+    player_name = input("Enter your name: ")
+    main(player_name)

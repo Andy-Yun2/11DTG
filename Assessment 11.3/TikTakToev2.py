@@ -281,16 +281,47 @@ def game_loop():
         other = character_selection()
         return play_mode(gm_mode, player, None, other, score)
 
+def show_instructions():
+    print("\n=== Tic-Tac-Toe (TOE) (Naught and Crosses) Instructions ===")
+    print("1. The game is played on a 3x3 grid.")
+    print("2. Each player picks a character to represent their moves.")
+    print("3. Your goal: get three of your symbols in a row (horizontal, vertical, or diagonal) before your opponent.")
+    print("4. Game Modes:")
+    print("   - First: You go first, then the computer (or enemy) takes turns.")
+    print("   - Last: The computer (or enemy) goes first, then you take turns.")
+    print("   - Duo: Two players take turns on the same board(You can play against your friend).")
+    print("5. Difficulty Levels (for computer opponent only):")
+    print("   - Easy: Random moves.")
+    print("   - Medium: Blocks your winning moves and tries to win.")
+    print("   - Impossible/Nightmare: Uses Minimax algorithm; nearly impossible to beat.")
+    print("6. On your turn, choose a position from 1 to 9 as shown below:")
+    print("   1 | 2 | 3")
+    print("   4 | 5 | 6")
+    print("   7 | 8 | 9")
+    print("7. The game ends when a player or your opponent wins or the board is full (draw).")
+    print("8. Keep track of your score! Wins give +1, losses give -1, draws give 0.\n")
 
-def main():
+
+def main(name):
     """This is the main game loop."""
+    print(f"Welcome to Tik tak toe {name}")
+    show_instructions()
+    start_ = input("Are you ready for this exciting game? ")
+    if start_ not in ("y", "yes"):
+        print(f"See you later {name}")
+        return "thinking"
+    print("Lets see how good you are! ")
+
     score = 0
     while True:
         score += game_loop()
         print(f"Your Score: {score}")
-        repeat = input("Play again? y/n ")
-        if repeat.lower() != "y":
-            return "Thank You for Playing."
+        repeat = input("Play again? y/n ").lower()
+        if repeat != "y":
+            print("Thank You for Playing.")
+            return score
 
 
-main()
+if __name__ == "__main__":
+    player_name = input("Enter your name: ")
+    main(player_name)

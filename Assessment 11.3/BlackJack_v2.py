@@ -159,15 +159,43 @@ def play_round(balance, deck):
         print("Push! 🤝 (Tie)")
         return balance
 
-def main():
+def main(name):
+    print(f"\nHello {name}! Nice choice!")
+    print("----------Welcome to the Game of BlackJack----------")
+    # instructions:
+    print("\n=== Instructions ===")
+    print("1. You start with a balance of 1000 cards.")
+    print("2. Place a bet at the start of each round.")
+    print("3. You and the dealer get two cards. One of dealer's cards is hidden.")
+    print("4. Your goal: get closer to 21 than the dealer without going over.")
+    print("5. Options you can choose each turn:")
+    print("   - Hit: draw another card")
+    print("   - Stand: keep your hand")
+    print("   - Double Down: double your bet and draw one final card")
+    print("   - Surrender: give up half your bet")
+    print("   - Split: if your first two cards are a pair, split into two hands")
+    print("6. Ace counts as 11 or 1, face cards are 10, number cards as their value.")
+    print("7. If you bust (go over 21), you lose the round.")
+    print("9. Wins and losses adjust your balance. If balance hits 0, game over!\n")
+
+    start_ = input(f"Are you ready {name}? (y/n) ").lower()
+    if start_ not in ("yes", "y"):
+        print("Dont rush, Take your time to think, you are always welcome here.")
+        return "think"
+    print(f"Good luck :)")
+
     balance = 1000
     deck = create_deck()
+
     while balance > 0:
-        print(f"\nBalance: {balance}")
+        print(f"\nBalance: {balance} cards")
         balance = play_round(balance, deck)
-        cont = input("Play again? (y/n): ").lower()
+        cont = input(f"Wanna play again {name}? (y/n): ").lower()
         if cont == 'n':
             break
-    print(f"Game over! Final balance: {balance}")
+    print(f"Game over! Final balance: {balance} cards")
+    return balance
 
-
+if __name__ == "__main__":
+    player_name = input("Enter your name: ")
+    main(player_name)
