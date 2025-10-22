@@ -2,11 +2,6 @@ import TikTakToev2, BlackJack_v2, Math_Dungeonv2, highscores
 
 print("----------Welcome to Game Compendium 101!----------")
 
-top_score_cards = 0
-top_score_wins = 0
-top_score_math = 0
-
-
 # Ask for player name once
 player_name = input("Please enter your name: ").strip().capitalize()
 if not player_name:

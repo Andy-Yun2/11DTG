@@ -308,7 +308,7 @@ def main(name):
     """This is the main game loop."""
     print(f"Welcome to Tik tak toe {name}")
     show_instructions()
-    start_ = input("Are you ready for this exciting game? ")
+    start_ = input("Are you ready for this exciting game? ").lower()
     if start_ not in ("y", "yes"):
         print(f"See you later {name}")
         return 0
