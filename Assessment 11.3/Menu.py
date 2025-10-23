@@ -1,4 +1,9 @@
-import TikTakToev2, BlackJack_v2, Math_Dungeonv2, highscores
+"""Game Compendium 101. Launch and manage multiple games with highscores."""
+
+import TikTakToev2
+import BlackJack_v2
+import Math_Dungeonv2
+import highscores
 
 print("----------Welcome to Game Compendium 101!----------")
 
@@ -12,17 +17,22 @@ else:
 games = ["BlackJack", "Tik Tak Toe", "Math Dungeon"]
 playing = True
 
+
 def show_games():
+    """Display the list of available games."""
     print("\nCollection of games:")
     for g in games:
         print("-", g)
 
+
 while playing:
     show_games()
-
     highscores.HighScores.show()
 
-    choice = input(f"\nHey {player_name}, which game do you want to play? (type 'exit' to quit): ").strip()
+    choice = input(
+        f"\nHey {player_name}, which game do you want to play? "
+        "(type 'exit' to quit): "
+    ).strip()
 
     if choice.lower() == "exit":
         print(f"I'll see you next time, {player_name}!")
@@ -48,4 +58,3 @@ while playing:
             print("\nHaven't decided yet?")
         else:
             print("\nWelcome back! Wanna try something else?")
-

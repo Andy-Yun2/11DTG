@@ -80,6 +80,7 @@ def selection():
             return difficulty
         print("Invalid choice! Try again.")
 
+
 def character_selection(exclude=None):
     """Ask player to choose their character, optionally excluding one."""
     while True:
@@ -88,7 +89,7 @@ def character_selection(exclude=None):
             print("Please choose only one character.")
             continue
         if exclude and temp == exclude:
-            print(f"That character is already taken! Choose another one.")
+            print("That character is already taken! Choose another one.")
             continue
         return temp
 
@@ -158,7 +159,7 @@ def enemy(level, enemy_char, player):
 def mode():
     """Ask player which mode to play."""
     while True:
-        game_mode = input("What mode do you want to play? (first/last/duo) ").lower()
+        game_mode = input("Game mode? (first/last/duo) ").lower()
         if game_mode not in ["first", "last", "duo"]:
             print("Invalid Mode.")
             continue
@@ -218,7 +219,7 @@ def play_mode(mod, player, level, enemy_char, score):
 
             if turn == "player":
                 try:
-                    pos = int(input(f"Player : {player} What position? (1 - 9): "))
+                    pos = int(input(f"Player:{player} What position? (1 - 9): "))
                     if pos < 1 or pos > 9:
                         print("That is an invalid spot!")
                         continue
@@ -249,7 +250,7 @@ def play_mode(mod, player, level, enemy_char, score):
             elif turn == "other":
 
                 try:
-                    pos = int(input(f"Player : {enemy_char} What position? (1 - 9): "))
+                    pos = int(input(f"Player:{enemy_char} What position? (1 - 9): "))
                     if pos < 1 or pos > 9:
                         print("That is an invalid spot!")
                         continue
@@ -259,7 +260,7 @@ def play_mode(mod, player, level, enemy_char, score):
                         print("That spot is taken!")
                         continue
 
-                    board[index] =enemy_char
+                    board[index] = enemy_char
 
                     if check_win(enemy_char):
                         print_board()
@@ -292,10 +293,12 @@ def game_loop():
         print(f"Your Opponent will be: {enemy_char}")
         return play_mode(gm_mode, player, level, enemy_char, score)
     else:
-        other  = character_selection(exclude=player)
+        other = character_selection(exclude=player)
         return play_mode(gm_mode, player, None, other, score)
 
+
 def show_instructions():
+    """Presents instructions."""
     print("\n=== Tic-Tac-Toe (TOE) (Naught and Crosses) Instructions ===")
     print("1. The game is played on a 3x3 grid.")
     print("2. Each player picks a character to represent their moves.")
@@ -318,7 +321,7 @@ def show_instructions():
 
 
 def main(name):
-    """This is the main game loop."""
+    """Run the game."""
     print(f"Welcome to Tik tak toe {name}")
     show_instructions()
     start_ = input("Are you ready for this exciting game? ").lower()

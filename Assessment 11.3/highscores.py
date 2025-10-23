@@ -1,6 +1,9 @@
-"""Highscores. record all gameplay stats"""
+"""Highscores. Record all gameplay stats."""
+
 
 class HighScores:
+    """Initialize the HighScores blueprint."""
+
     FILE = "all_game_highscores.txt"
 
     @staticmethod
@@ -11,7 +14,7 @@ class HighScores:
 
     @staticmethod
     def show(game_name=None):
-        """Display high scores, filtered by game."""
+        """Display high scores, optionally filtered by game."""
         print("\n=== High Scores ===")
         try:
             with open(HighScores.FILE, "r") as file:
@@ -29,4 +32,3 @@ class HighScores:
                     print(f"{game:<12} | {name:<10} | {score:<5} | {difficulty}")
         except FileNotFoundError:
             print("No high scores yet!")
-
