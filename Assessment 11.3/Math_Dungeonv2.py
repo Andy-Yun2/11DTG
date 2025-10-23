@@ -203,7 +203,6 @@ class Math:
 
 
 def main(name):
-    lives = 5
     enemy_list = [
         Enemy("Novice", 1),
         Enemy("Apprentice", 1),
@@ -236,7 +235,7 @@ def main(name):
     print("=== Instructions ===")
     print("1. Face enemies and mighty bosses, each of daunting intellect.")
     print("2. To vanquish an enemy, solve the riddle they conjure.")
-    print("3. You start with 5 lives; each blunder costs thee one.")
+    print("3. Your lives depends on difficulty; each blunder costs thee one.")
     print("4. Answer with precision; round to 2 decimals when needed.")
     print("5. Lose all lives and thy quest ends. Defeat all foes to claim glory!")
     print("6. May fortune favor thee, brave scholar!\n")
@@ -245,6 +244,24 @@ def main(name):
     if start_ not in ("y", "yes"):
         print(f"Take thy time, {name}. Return when ready to prove thy might!")
         return 0
+
+    difficulty_levels = {
+        "easy": 20,
+        "normal": 18,
+        "hard": 11,
+        "insane": 5
+    }
+
+    print("\nChoose your difficulty:")
+    print("Easy, Normal, Hard, Insane")
+    while True:
+        difficulty_input = input("Enter difficulty: ").lower()
+        if difficulty_input in difficulty_levels:
+            lives = difficulty_levels[difficulty_input]
+            break
+        else:
+            print("Invalid choice. Please select Easy, Normal, Hard, or Insane.")
+
 
     for enemy in enemy_list + boss_list:
         enemy_max_hp = enemy.hp
@@ -262,7 +279,7 @@ def main(name):
             question = Math(enemy.difficulty, 0)
             print(f"\nThe riddle speaks: {question.question_text}")
 
-            # Display enemy health bar
+            # Enemy health bar
             bar_length = 20
             filled = int((enemy.hp / enemy_max_hp) * bar_length)
             health_bar = "[" + "#" * filled + "-" * (bar_length - filled) + "]"
@@ -294,7 +311,7 @@ def main(name):
         print(r.choice(victory_messages))
 
     print(f"\nHuzzah, {name}! Thou hast conquered all enemies in the Math Dungeon!")
-    highscores.HighScores.save("Math Dungeon", name, lives)
+    highscores.HighScores.save("Math Dungeon", name, lives, difficulty_input)
     highscores.HighScores.show("Math Dungeon")
 
     again = input("Do you want to challenge Math Dungeon again? (y/n): ").lower()
