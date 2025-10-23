@@ -204,7 +204,6 @@ class Math:
 
 def main(name):
     lives = 5
-    score = 0
     enemy_list = [
         Enemy("Novice", 1),
         Enemy("Apprentice", 1),
@@ -233,66 +232,64 @@ def main(name):
         Boss("Masochist", 11)
     ]
 
-    flavor = {
-        "Novice": "A shaky apprentice steps forward, clutching a dull pencil.",
-        "Adept": "A confident scholar adjusts their glasses with precision.",
-        "Masochist": "They grin at the impossible equations ahead.",
-        "Eternity": "The air warps as infinite math energy surrounds you..."
-    }
-
-    print(f"\nHELLO {name}! Welcome to Math Dungeon !!!!!")
+    print(f"\nHail, {name}! Welcome to the hallowed halls of Math Dungeon!")
     print("=== Instructions ===")
-    print("1. You will face a series of enemies and bosses, each with a difficulty level.")
-    print("2. To defeat an enemy, solve the math question they present.")
-    print("3. You start with 5 lives. Each wrong answer costs you 1 life.")
-    print("4. Answer as accurately as possible. Make sure all the answers are rounded to 2 decimal places.")
-    print("5. If you lose all your lives, the game ends. Defeat all enemies to win!")
-    print("6. Have fun and challenge your math skills! :D\n")
+    print("1. You shall face enemies and mighty bosses, each of daunting intellect.")
+    print("2. To vanquish an enemy, solve the riddle they conjure.")
+    print("3. You start with 5 lives; each blunder costs thee one.")
+    print("4. Give thy answers with utmost precision. Round to 2 decimals when needed.")
+    print("5. Shouldst thou lose all lives, thy quest ends. Defeat all foes to claim glory!")
+    print("6. May fortune favor thee, brave scholar!\n")
 
-    start_ = input(f"Ready to start {name}? (y/n): ").lower()
+    start_ = input(f"Art thou ready, {name}? (y/n): ").lower()
     if start_ not in ("y", "yes"):
-        print(f"No worries {name}:) Take your time. Come back when you're ready!")
+        print(f"Take thy time, {name}. Return when ready to prove thy might!")
         return 0
 
-    # Loop through all enemies and bosses
     for enemy in enemy_list + boss_list:
-        print(f"\nYou encounter {enemy.name} (Level {enemy.difficulty})!")
-        if enemy.name in flavor:
-            print(flavor[enemy.name])
+        print(f"\nA wild {enemy.name} of level {enemy.difficulty} appears! Prepare thyself!")
 
-        # Extra: Fight loop with HP
-        while enemy.hp > 0 and lives > 0:
-            question = Math(enemy.difficulty, 0)
-            print("Question:", question.question_text)
+        # Optional: boss epic monologue
+        if isinstance(enemy, Boss):
+            boss_lines = [
+                f"I am {enemy.name}, ruler of this realm! Solve my riddle if thou darest!",
+                f"Foolish mortal, {enemy.name} stands before thee! Canst thou answer my challenge?",
+                f"Tremble! {enemy.name} demands thy wits, or be vanquished!"
+            ]
+            print(r.choice(boss_lines))
 
-            try:
-                user_answer = float(input("Your answer: "))
-                if round(user_answer, 2) == round(question.answer, 2):
-                    enemy.hp -= 2  # Correct answer reduces HP
-                    score += 10 * enemy.difficulty  # Extra: score increases
-                    print(f"Correct! {enemy.name}'s HP is now {enemy.hp}")
-                    if enemy.hp <= 0:
-                        print(f"You defeated the {enemy.name}!\n")
-                else:
-                    lives -= 1
-                    print(f"Wrong! The correct answer was: {round(question.answer, 2)}")
-                    print(f"The {enemy.name} blocked your attack!")
-                    print(f"Lives remaining: {lives}")
-            except ValueError:
-                print("Please enter a valid number.")
+        question = Math(enemy.difficulty, 0)
+        print("The riddle speaks:", question.question_text)
 
-            if lives < 1:
-                print(f"Bad luck! You ran out of lives. Try again next time!")
-                highscores.HighScores.save("Math Dungeon", name, score)
-                highscores.HighScores.show("Math Dungeon")
-                return -1
+        if lives < 1:
+            print(f"Alas, thy journey ends here. Return stronger next time, {name}!")
+            return -1
+        try:
+            user_answer = float(input("Thy answer: "))
+            if round(user_answer, 2) == round(question.answer, 2):
+                victory_messages = [
+                    f"Well met! {enemy.name} is defeated by thy wisdom!",
+                    f"Thy intellect triumphs over {enemy.name}'s cunning!",
+                    f"A fine strike! {enemy.name} yields before thy might!"
+                ]
+                print(r.choice(victory_messages))
+            else:
+                lives -= 1
+                fail_messages = [
+                    f"Alas! The correct answer was {round(question.answer,2)}. The {enemy.name} strikes back!",
+                    f"Thou hast erred! {enemy.name} laughs at thy folly!",
+                    f"Misfortune! Thy answer was wrong, and the {enemy.name} blocks thy advance!"
+                ]
+                print(r.choice(fail_messages))
+                print(f"Lives remaining: {lives}")
+        except ValueError:
+            print("Pray, enter a valid number.")
 
-    print(f"Congratulations {name}, you beat all the enemies! :D")
-    print(f"Final Score: {score}")
-    highscores.HighScores.save("Math Dungeon", name, score)
+    print(f"\nHuzzah, {name}! Thou hast conquered all enemies in the Math Dungeon!")
+    highscores.HighScores.save("Math Dungeon", name, lives)
     highscores.HighScores.show("Math Dungeon")
 
-    # Extra: Ask to replay
+    # Replay function
     again = input("Do you want to challenge Math Dungeon again? (y/n): ").lower()
     if again in ("y", "yes"):
         main(name)
