@@ -234,11 +234,11 @@ def main(name):
 
     print(f"\nHail, {name}! Welcome to the hallowed halls of Math Dungeon!")
     print("=== Instructions ===")
-    print("1. You shall face enemies and mighty bosses, each of daunting intellect.")
+    print("1. Face enemies and mighty bosses, each of daunting intellect.")
     print("2. To vanquish an enemy, solve the riddle they conjure.")
     print("3. You start with 5 lives; each blunder costs thee one.")
-    print("4. Give thy answers with utmost precision. Round to 2 decimals when needed.")
-    print("5. Shouldst thou lose all lives, thy quest ends. Defeat all foes to claim glory!")
+    print("4. Answer with precision; round to 2 decimals when needed.")
+    print("5. Lose all lives and thy quest ends. Defeat all foes to claim glory!")
     print("6. May fortune favor thee, brave scholar!\n")
 
     start_ = input(f"Art thou ready, {name}? (y/n): ").lower()
@@ -247,9 +247,9 @@ def main(name):
         return 0
 
     for enemy in enemy_list + boss_list:
+        enemy_max_hp = enemy.hp
         print(f"\nA wild {enemy.name} of level {enemy.difficulty} appears! Prepare thyself!")
 
-        # Optional: boss epic monologue
         if isinstance(enemy, Boss):
             boss_lines = [
                 f"I am {enemy.name}, ruler of this realm! Solve my riddle if thou darest!",
@@ -258,42 +258,50 @@ def main(name):
             ]
             print(r.choice(boss_lines))
 
-        question = Math(enemy.difficulty, 0)
-        print("The riddle speaks:", question.question_text)
+        while enemy.hp > 0:
+            question = Math(enemy.difficulty, 0)
+            print(f"\nThe riddle speaks: {question.question_text}")
 
-        if lives < 1:
-            print(f"Alas, thy journey ends here. Return stronger next time, {name}!")
-            return -1
-        try:
-            user_answer = float(input("Thy answer: "))
-            if round(user_answer, 2) == round(question.answer, 2):
-                victory_messages = [
-                    f"Well met! {enemy.name} is defeated by thy wisdom!",
-                    f"Thy intellect triumphs over {enemy.name}'s cunning!",
-                    f"A fine strike! {enemy.name} yields before thy might!"
-                ]
-                print(r.choice(victory_messages))
-            else:
-                lives -= 1
-                fail_messages = [
-                    f"Alas! The correct answer was {round(question.answer,2)}. The {enemy.name} strikes back!",
-                    f"Thou hast erred! {enemy.name} laughs at thy folly!",
-                    f"Misfortune! Thy answer was wrong, and the {enemy.name} blocks thy advance!"
-                ]
-                print(r.choice(fail_messages))
-                print(f"Lives remaining: {lives}")
-        except ValueError:
-            print("Pray, enter a valid number.")
+            # Display enemy health bar
+            bar_length = 20
+            filled = int((enemy.hp / enemy_max_hp) * bar_length)
+            health_bar = "[" + "#" * filled + "-" * (bar_length - filled) + "]"
+            print(f"{enemy.name} HP: {health_bar} ({enemy.hp}/{enemy_max_hp})")
+
+            try:
+                user_answer = float(input("Thy answer: "))
+                if round(user_answer, 2) == round(question.answer, 2):
+                    damage = 1  # Correct answer reduces enemy HP by 1
+                    enemy.hp -= damage
+                    print(f"Well met! Thy answer strikes {enemy.name} for {damage} damage!")
+                else:
+                    lives -= 1
+                    print(f"Alas! The correct answer was {round(question.answer,2)}. The {enemy.name} strikes back!")
+                    print(f"Lives remaining: {lives}")
+
+                if lives < 1:
+                    print(f"\nAlas, thy journey ends here. Return stronger next time, {name}!")
+                    return -1
+
+            except ValueError:
+                print("Pray, enter a valid number.")
+
+        victory_messages = [
+            f"Victory! {enemy.name} is vanquished by thy wisdom!",
+            f"Thy intellect triumphs over {enemy.name}'s cunning!",
+            f"A fine strike! {enemy.name} yields before thy might!"
+        ]
+        print(r.choice(victory_messages))
 
     print(f"\nHuzzah, {name}! Thou hast conquered all enemies in the Math Dungeon!")
     highscores.HighScores.save("Math Dungeon", name, lives)
     highscores.HighScores.show("Math Dungeon")
 
-    # Replay function
     again = input("Do you want to challenge Math Dungeon again? (y/n): ").lower()
     if again in ("y", "yes"):
         main(name)
     return 1
+
 
 if __name__ == "__main__":
     player_name = input("Enter your name: ")
