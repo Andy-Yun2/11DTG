@@ -11,7 +11,7 @@ class Enemy:
         """Initialize an enemy with name, difficulty, and HP."""
         self.name = name
         self.difficulty = difficulty
-        self.hp = difficulty * 2
+        self.hp = difficulty * 1.5
 
 
 class Boss:
@@ -20,7 +20,7 @@ class Boss:
         """Initialize a boss with name, difficulty, and HP."""
         self.name = name
         self.difficulty = difficulty
-        self.hp = difficulty + difficulty * 10
+        self.hp = difficulty * 2
 
 
 class Math:
@@ -270,7 +270,7 @@ def main(name):
             try:
                 user_answer = float(input("Thy answer: "))
                 if round(user_answer, 2) == round(question.answer, 2):
-                    damage = 1
+                    damage = r.randint(1,5)
                     enemy.hp -= damage
                     print(f"Well met! Thy answer strikes {enemy.name} for {damage} damage!")
                 else:
