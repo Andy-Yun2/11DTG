@@ -3,6 +3,7 @@ import highscores
 
 suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
 base_values = {
     "2": 2, "3": 3, "4": 4, "5": 5, "6": 6,
     "7": 7, "8": 8, "9": 9, "10": 10,
@@ -43,16 +44,16 @@ def dealer_turn(deck, dealer_hand):
 def compare_hand_to_dealer(hand, dealer_total, bet):
     player_total = hand_value(hand)
     if player_total > 21:
-        print(f"{hand} busted. You lose {bet}.")
+        print(f"{hand} busted. 💀 You lose {bet}.")
         return -bet
     elif dealer_total > 21 or player_total > dealer_total:
-        print(f"{hand} wins! You win {bet}.")
+        print(f"{hand} wins! 🎉 You win {bet}.")
         return bet
     elif player_total < dealer_total:
-        print(f"{hand} loses. You lose {bet}.")
+        print(f"{hand} loses. 💀 You lose {bet}.")
         return -bet
     else:
-        print(f"{hand} pushes (tie).")
+        print(f"{hand} pushes 🤝 (tie).")
         return 0
 
 def play_split_hand(deck, hand):
@@ -60,7 +61,7 @@ def play_split_hand(deck, hand):
         if hand_value(hand) > 21:
             print(f"{hand} busts!")
             return hand
-        choice = input(f"{hand} (Value: {hand_value(hand)}) - Hit or Stand?").lower()
+        choice = input(f"{hand} (Value: {hand_value(hand)}) - Hit or Stand? ").lower()
         if choice == "hit":
             card = draw_card(deck)
             hand.append(card)
@@ -146,19 +147,8 @@ def play_round(balance, deck):
             print("Invalid choice. Try again.")
 
     dealer_total = dealer_turn(deck, dealer_hand)
-    player_total = hand_value(player_hand)
-
-    if dealer_total > 21 or player_total > dealer_total:
-        print("You win! 🎉")
-        if len(player_hand) == 2:
-            return balance + bet * 1.5
-        return balance + bet
-    elif player_total < dealer_total:
-        print("Dealer wins! 💀")
-        return balance - bet
-    else:
-        print("Push! 🤝 (Tie)")
-        return balance
+    balance += compare_hand_to_dealer(player_hand, dealer_total, bet)
+    return balance
 
 def main(name):
     print(f"\nHello {name}! Nice choice!")

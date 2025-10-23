@@ -61,7 +61,7 @@ class Math:
         return f"{a} {op} {b}", eval(f"{a}{op}{b}")
 
     def generate_geometry(self):
-        if 2 <= self.level <= 9:
+        if 2 <= self.level <= 11:
             choices = r.choice(["area", "volume", "length"])
             if choices == "area":
                 a, b = r.randint(5, 10 * self.level), r.randint(7, 20 * self.level)
@@ -166,7 +166,7 @@ class Math:
             solution = sp.solve(sp.Eq(left_expr, right_expr), x)
             ans = float(solution[0])
             return question_text, ans
-        elif 5 <= self.level < 10:
+        elif 5 <= self.level < 12:
 
             a, b, c, d = r.randint(1, 10), r.randint(-10, 10), r.randint(-10, 10), r.randint(-10, 10)
             op1, op2 = r.choice(["+", "-", "*", "/"]), r.choice(["+", "-", "*", "/"])
@@ -204,28 +204,42 @@ class Math:
 
 def main(name):
     lives = 5
+    score = 0
     enemy_list = [
         Enemy("Novice", 1),
-        Enemy("Easy", 1),
+        Enemy("Apprentice", 1),
         Enemy("Beginner", 2),
-        Enemy("Normal", 2),
+        Enemy("Student", 2),
         Enemy("Learner", 3),
-        Enemy("Intermediate", 3),
+        Enemy("Amateur", 3),
+        Enemy("Intermediate", 4),
         Enemy("Adept", 4),
         Enemy("Skilled", 5),
-        Enemy("Advanced", 5)
+        Enemy("Specialist", 5),
+        Enemy("Advanced", 6),
+        Enemy("Tactician", 6)
     ]
 
     boss_list = [
-        Boss("Professional", 6),
-        Boss("Ace", 6),
+        Boss("Professional", 7),
         Boss("Expert", 7),
-        Boss("Legendary", 7),
-        Boss("Master", 8),
-        Boss("Conqueror", 8),
-        Boss("Eternity", 9),
-        Boss("Masochist", 9),
+        Boss("Veteran", 8),
+        Boss("Ace", 8),
+        Boss("Master", 9),
+        Boss("Champion", 9),
+        Boss("Conqueror", 10),
+        Boss("Overlord", 10),
+        Boss("Eternity", 11),
+        Boss("Masochist", 11)
     ]
+
+    flavor = {
+        "Novice": "A shaky apprentice steps forward, clutching a dull pencil.",
+        "Adept": "A confident scholar adjusts their glasses with precision.",
+        "Masochist": "They grin at the impossible equations ahead.",
+        "Eternity": "The air warps as infinite math energy surrounds you..."
+    }
+
     print(f"\nHELLO {name}! Welcome to Math Dungeon !!!!!")
     print("=== Instructions ===")
     print("1. You will face a series of enemies and bosses, each with a difficulty level.")
@@ -243,32 +257,46 @@ def main(name):
     # Loop through all enemies and bosses
     for enemy in enemy_list + boss_list:
         print(f"\nYou encounter {enemy.name} (Level {enemy.difficulty})!")
+        if enemy.name in flavor:
+            print(flavor[enemy.name])
 
-        # Generate a math question based on the enemy's difficulty
-        question = Math(enemy.difficulty, 0)
-        print("Question:", question.question_text)
+        # Extra: Fight loop with HP
+        while enemy.hp > 0 and lives > 0:
+            question = Math(enemy.difficulty, 0)
+            print("Question:", question.question_text)
 
-        if lives < 1:
-            print(f"Bad luck. try again next time!")
-            return -1
-        try:
-            user_answer = float(input("Your answer: "))
-            if round(user_answer, 2) == round(question.answer, 2):
-                print("Correct! You defeated the", enemy.name)
+            try:
+                user_answer = float(input("Your answer: "))
+                if round(user_answer, 2) == round(question.answer, 2):
+                    enemy.hp -= 2  # Correct answer reduces HP
+                    score += 10 * enemy.difficulty  # Extra: score increases
+                    print(f"Correct! {enemy.name}'s HP is now {enemy.hp}")
+                    if enemy.hp <= 0:
+                        print(f"You defeated the {enemy.name}!\n")
+                else:
+                    lives -= 1
+                    print(f"Wrong! The correct answer was: {round(question.answer, 2)}")
+                    print(f"The {enemy.name} blocked your attack!")
+                    print(f"Lives remaining: {lives}")
+            except ValueError:
+                print("Please enter a valid number.")
 
-            else:
-                lives -= 1
-                print("Wrong! The correct answer was:", round(question.answer, 2))
-                print("The", enemy.name, "Blocked your attack!")
-                print(f"Your lives : {lives}")
-        except ValueError:
-            print("Please enter a valid number.")
+            if lives < 1:
+                print(f"Bad luck! You ran out of lives. Try again next time!")
+                highscores.HighScores.save("Math Dungeon", name, score)
+                highscores.HighScores.show("Math Dungeon")
+                return -1
 
-    print(f"congratulations, you beat all the enemies! :D")
-    highscores.HighScores.save("Math Dungeon", name, lives)
+    print(f"Congratulations {name}, you beat all the enemies! :D")
+    print(f"Final Score: {score}")
+    highscores.HighScores.save("Math Dungeon", name, score)
     highscores.HighScores.show("Math Dungeon")
-    return 1
 
+    # Extra: Ask to replay
+    again = input("Do you want to challenge Math Dungeon again? (y/n): ").lower()
+    if again in ("y", "yes"):
+        main(name)
+    return 1
 
 if __name__ == "__main__":
     player_name = input("Enter your name: ")

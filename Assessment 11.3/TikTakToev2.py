@@ -80,14 +80,17 @@ def selection():
             return difficulty
         print("Invalid choice! Try again.")
 
-
-def character_selection():
-    """Ask player to choose their character."""
+def character_selection(exclude=None):
+    """Ask player to choose their character, optionally excluding one."""
     while True:
         temp = input("What character do you want to be? ")
-        if len(temp) == 1:
-            return temp
-        print("Please choose only one character.")
+        if len(temp) != 1:
+            print("Please choose only one character.")
+            continue
+        if exclude and temp == exclude:
+            print(f"That character is already taken! Choose another one.")
+            continue
+        return temp
 
 
 def choose_enemy_char(player):
@@ -233,6 +236,11 @@ def play_mode(mod, player, level, enemy_char, score):
                         score += 1
                         return score
 
+                    if " " not in board:
+                        print_board()
+                        print("It's a draw!")
+                        return score
+
                     turn = "other"
 
                 except ValueError:
@@ -259,6 +267,11 @@ def play_mode(mod, player, level, enemy_char, score):
                         score += 1
                         return score
 
+                    if " " not in board:
+                        print_board()
+                        print("It's a draw!")
+                        return score
+
                     turn = "player"
 
                 except ValueError:
@@ -279,7 +292,7 @@ def game_loop():
         print(f"Your Opponent will be: {enemy_char}")
         return play_mode(gm_mode, player, level, enemy_char, score)
     else:
-        other = character_selection()
+        other  = character_selection(exclude=player)
         return play_mode(gm_mode, player, None, other, score)
 
 def show_instructions():
