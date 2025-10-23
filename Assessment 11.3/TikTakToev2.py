@@ -337,7 +337,7 @@ def main(name):
         repeat = input("Play again? y/n ").lower()
         if repeat != "y":
             print("Thank You for Playing.")
-            highscores.HighScores.save("Tik Tak Toe", name, score)
+            highscores.HighScores.save("Tik Tak Toe", name, score, )
             highscores.HighScores.show("Tik Tak Toe")
             return 1
 

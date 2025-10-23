@@ -4,7 +4,7 @@
 class HighScores:
     """Initialize the HighScores blueprint."""
 
-    FILE = "all_game_highscores.txt"
+    FILE = "game_highscores.txt"
 
     @staticmethod
     def save(game_name, player_name, score, difficulty):
