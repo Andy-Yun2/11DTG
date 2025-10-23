@@ -69,42 +69,40 @@ class Math:
 
     def generate_geometry(self):
         """Generate geometry question."""
-        if 2 <= self.level <= 11:
-            choices = r.choice(["area", "volume", "length"])
-            if choices == "area":
-                a, b = r.randint(5, 10 * self.level), r.randint(7, 20 * self.level)
-                return (
-                    f"Find the area of the rectangle when the length and width are {a},{b}",
-                    eval(f"{a} * {b}"),
-                )
-            elif choices == "volume":
-                a, b, c = (
-                    r.randint(5, 10 * self.level),
-                    r.randint(7, 20 * self.level),
-                    r.randint(10, 30),
-                )
-                return (
-                    f"Find the volume of the rectangle when the length, width and height are {a}, {b}, {c}",
-                    eval(f"{a} * {b} * {c}"),
-                )
-            elif choices == "length":
-                a, b = r.randint(10, 20 * self.level), r.randint(1, 5 + self.level)
-                return (
-                    f"Find the length of the rectangle when the area is {a} and the width is {b}",
-                    eval(f"{a} / {b}"),
-                )
-            else:
-                a, b = r.randint(5, 10), r.randint(7, 10)
-                return (
-                    f"Find the area of the rectangle when the length and width are {a},{b}",
-                    eval(f"{a} * {b}"),
-                )
-        return None
+        choices = r.choice(["area", "volume", "length"])
+        if choices == "area":
+            a, b = r.randint(5, 10 * self.level), r.randint(7, 20 * self.level)
+            return (
+                f"Find the area of the rectangle when the length and width are {a},{b}",
+                eval(f"{a} * {b}"),
+            )
+        elif choices == "volume":
+            a, b, c = (
+                r.randint(5, 10 * self.level),
+                r.randint(7, 20 * self.level),
+                r.randint(10, 30),
+            )
+            return (
+                f"Find the volume of the rectangle when the length, width and height are {a}, {b}, {c}",
+                eval(f"{a} * {b} * {c}"),
+            )
+        elif choices == "length":
+            a, b = r.randint(10, 20 * self.level), r.randint(1, 5 + self.level)
+            return (
+                f"Find the length of the rectangle when the area is {a} and the width is {b}",
+                eval(f"{a} / {b}"),
+            )
+        else:
+            a, b = r.randint(5, 10), r.randint(7, 10)
+            return (
+                f"Find the area of the rectangle when the length and width are {a},{b}",
+                eval(f"{a} * {b}"),
+            )
 
     def generate_graphing(self):
         """Generate graphing question based on level."""
-        choices = r.choice(["cubic", "quartic", "quadratic", "linear"])
         if self.level < 6:
+            choices = r.choice(["quadratic", "linear"])
             match choices:
                 case "linear":
                     a, b = (self.non_zero(-3, 7) for _ in range(2))
@@ -123,6 +121,7 @@ class Math:
                     answer = eval(f"({a})*({x})**2 {op} ({b})*({x}) {op1} ({c})")
                     return question_text, answer
         elif self.level >= 6:
+            choices = r.choice(["cubic", "quartic"])
             match choices:
                 case "cubic":
                     a, b, c, d = (self.non_zero(-3, 7) for _ in range(4))
@@ -171,18 +170,25 @@ class Math:
             solution = sp.solve(sp.Eq(left_expr, right_expr), x)
             return question_text, float(solution[0])
         elif 5 <= self.level < 12:
-            a, b, c, d = r.randint(1, 10), r.randint(-10, 10), r.randint(-10, 10), r.randint(-10, 10)
-            op1, op2 = r.choice(["+", "-", "*", "/"]), r.choice(["+", "-", "*", "/"])
-            lhs = a * x if op1 in ["*", "/"] else x
-            lhs = lhs + b if op1 == "+" else lhs - b if op1 == "-" else lhs * b if op1 == "*" else lhs / b
-            lhs = lhs + c if op2 == "+" else lhs - c if op2 == "-" else lhs * c if op2 == "*" else lhs / c
-            rhs = d
-            eq = sp.Eq(lhs, rhs)
-            solution = sp.solve(eq, x)[0]
-            question = f"Solve for x: {eq}"
-            return question, float(solution)
-        question_text = "level too high"
-        return question_text, "none"
+            while True:  # keep generating until a solvable equation is created
+                a, b, c, d = r.randint(1, 10), r.randint(-10, 10), r.randint(-10, 10), r.randint(-10, 10)
+                op1, op2 = r.choice(["+", "-", "*", "/"]), r.choice(["+", "-", "*", "/"])
+
+                lhs = a * x if op1 in ["*", "/"] else x
+                lhs = lhs + b if op1 == "+" else lhs - b if op1 == "-" else lhs * b if op1 == "*" else lhs / b
+                lhs = lhs + c if op2 == "+" else lhs - c if op2 == "-" else lhs * c if op2 == "*" else lhs / c
+
+                rhs_expr = sp.sympify(d)
+                eq = sp.Eq(lhs, rhs_expr)
+
+                solution = sp.solve(eq, x)
+
+                if solution:  # only use equations with a valid solution
+                    question_text = f"Solve for x: {sp.simplify(lhs)} = {rhs_expr}"
+                    return question_text, float(solution[0])
+        else:
+            question_text = "level too high"
+            return question_text, "none"
 
 
 def main(name):
