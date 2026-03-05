@@ -276,7 +276,7 @@ def main(name):
             try:
                 user_answer = float(input("Thy answer: "))
                 if round(user_answer, 2) == round(question.answer, 2):
-                    damage = r.randint(1,5)
+                    damage = r.randint(3,10)
                     enemy.hp -= damage
                     print(f"Well met! Thy answer strikes {enemy.name} for {damage} damage!")
                 else:
